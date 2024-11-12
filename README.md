@@ -23,7 +23,7 @@ Implemented based on LinkedIn learning course:
 
 Having stand-alone Java application (running without web server) we will have next Gradle dependencies:
 
-```
+```groovy
 dependencies {
     // https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-core
     implementation("org.hibernate.orm:hibernate-core:6.6.1.Final")
@@ -39,7 +39,7 @@ dependencies {
 Next, we should have Hibernate properties in `persistance.xml` file
 under `src/main/resources/META-INF` directory like this:
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="3.0" xmlns="https://jakarta.ee/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
     <!-- Define Persistence Unit -->
@@ -73,7 +73,7 @@ Now, we are ready to implement JPA layer.
   and `teacher_id` as reference to `teacher` table.
 
 **Solution**:
-```
+```sql
 CREATE SCHEMA IF NOT EXISTS art_school
     AUTHORIZATION postgres;
 ```
