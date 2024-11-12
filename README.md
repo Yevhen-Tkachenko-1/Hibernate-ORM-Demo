@@ -5,7 +5,9 @@ Learn and play with Hibernate to map Java objects and PostgreSQL data
 Implemented based on LinkedIn learning course:
 [Java Persistence with JPA and Hibernate](https://www.linkedin.com/learning/java-persistence-with-jpa-and-hibernate)
 
-Tech stack
+## JPA implementation with Hibernate
+
+**Tech stack**:
 - JPA
 - Hibernate
 - PostgreSQL
@@ -17,9 +19,7 @@ Tech stack
 - Connect to PostgreSQL Server by any client
 - Create `hibernate` database to be used for this demo and switch to it
 
-### Practice: JPA implementation with Hibernate
-
-#### Project setup:
+### Project setup
 
 Having stand-alone Java application (running without web server) we will have next Gradle dependencies:
 
@@ -30,6 +30,9 @@ dependencies {
     
     // https://mvnrepository.com/artifact/org.postgresql/postgresql
     implementation("org.postgresql:postgresql:42.7.4")
+    
+    compileOnly("org.projectlombok:lombok:1.18.28")
+    annotationProcessor("org.projectlombok:lombok:1.18.28")
 }
 ```
 
@@ -135,4 +138,42 @@ CREATE TABLE IF NOT EXISTS art_school.art_reviews(
 );
 ``` 
 
+#### Challenge: Define "Art School" classes in Java
+
+**Task**:
+
+- Create Java classes to map corresponding tables using `jakarta.persistence` annotations
+- Implement standard Java methods using `lombok` annotations
+
+**Solution example**:
+
+```java
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Getter;
+
+@Entity
+@Table(schema = "art_school", name = "art_teachers")
+@NoArgsConstructor // Required: used by the JPA provider to create instances of the entity using reflection
+@AllArgsConstructor // Optional: used by this app
+@Setter // Optional: used by this app
+@Getter // Optional: used by this app
+public class ArtTeacher {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "teacher_id")
+    private int id;
+
+    @Column(name = "teacher_name")
+    private String name;
+}
+```
 
