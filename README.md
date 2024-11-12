@@ -23,7 +23,7 @@ Implemented based on LinkedIn learning course:
 
 Having stand-alone Java application (running without web server) we will have next Gradle dependencies:
 
-```groovy
+```kotlin
 dependencies {
     // https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-core
     implementation("org.hibernate.orm:hibernate-core:6.6.1.Final")
@@ -77,7 +77,7 @@ Now, we are ready to implement JPA layer.
 CREATE SCHEMA IF NOT EXISTS art_school
     AUTHORIZATION postgres;
 ```
-```
+```sql
 CREATE TABLE IF NOT EXISTS art_school.art_teachers(
     teacher_id   serial,
     teacher_name varchar(255),
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS art_school.art_teachers(
     PRIMARY KEY (teacher_id)
 );
 ```
-```
+```sql
 CREATE TABLE IF NOT EXISTS art_school.art_students(
     student_id   serial,
     student_name varchar(255),
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS art_school.art_students(
     PRIMARY KEY (student_id)
 );
 ```
-```
+```sql
 CREATE TABLE IF NOT EXISTS art_school.art_classes(
     class_id    serial,
     class_name  varchar(255),
@@ -107,7 +107,7 @@ CREATE TABLE IF NOT EXISTS art_school.art_classes(
         ON DELETE RESTRICT
 );
 ```
-```
+```sql
 CREATE TABLE IF NOT EXISTS art_school.students_classes_mapping(
     student_id int,
     class_id   int,
@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS art_school.students_classes_mapping(
         ON DELETE RESTRICT
 );
 ```
-```
+```sql
 CREATE TABLE IF NOT EXISTS art_school.art_reviews(
     review_id      serial,
     review_comment varchar(255),
