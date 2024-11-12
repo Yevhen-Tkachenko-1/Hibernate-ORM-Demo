@@ -1,4 +1,4 @@
-package yevhent.demo.springboot;
+package yevhent.demo.hibernate;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
