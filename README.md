@@ -18,10 +18,15 @@ Implemented based on LinkedIn learning course:
 - Install PostgreSQL Client: `pgAdmin` desktop app or `psql` console tool
 - Connect to PostgreSQL Server by any client
 - Create `hibernate` database to be used for this demo and switch to it
+- Create env variables on your machine: `POSTGRESQL_USER_NAME`, `POSTGRESQL_USER_PASSWORD`
+  in order to allow java app connect to `hibernate` database 
+  and not to store credentials in repository
 
 ### Project setup
 
-Having stand-alone Java application (running without web server) we will have next Gradle dependencies:
+#### Gradle dependencies
+
+Having stand-alone Java application (running without web server) we will use next libs:
 
 ```kotlin
 dependencies {
@@ -36,7 +41,9 @@ dependencies {
 }
 ```
 
-Next, we should have Hibernate properties in `persistance.xml` file
+#### Persistence Unit configuration: XML
+
+We should have JPA-Hibernate configuration in `persistance.xml` file
 under `src/main/resources/META-INF` directory like this:
 
 ```xml
@@ -45,6 +52,10 @@ under `src/main/resources/META-INF` directory like this:
     <!-- Define Persistence Unit -->
     <persistence-unit name="art_school" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <class>yevhent.demo.hibernate.entity.ArtStudent</class>
+        <class>yevhent.demo.hibernate.entity.ArtTeacher</class>
+        <class>yevhent.demo.hibernate.entity.ArtClass</class>
+        <class>yevhent.demo.hibernate.entity.ArtReview</class>
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver" />
             <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/hibernate" />
@@ -56,9 +67,90 @@ under `src/main/resources/META-INF` directory like this:
 </persistence>
 ```
 
-Make sure you have env variables on your machine with keys `POSTGRESQL_USER_NAME`, `POSTGRESQL_USER_PASSWORD`.
+Alternatively, we can define ENV properties separately like this
+(in my case ENV variables was not loaded from `persistence.xml`, so I had to use such way):
+```java
+public class ArtSchoolFactory {
 
-Now, we are ready to implement JPA layer.
+  public static EntityManagerFactory createEntityManagerFactory() {
+    Map<String, String> properties = new HashMap<>();
+    properties.put("jakarta.persistence.jdbc.user", System.getenv("POSTGRESQL_USER_NAME"));
+    properties.put("jakarta.persistence.jdbc.password", System.getenv("POSTGRESQL_USER_PASSWORD"));
+    EntityManagerFactory factory = Persistence.createEntityManagerFactory("art_school", properties);
+    return factory;
+  }
+} 
+```
+
+#### Persistence Unit configuration: Java
+
+Another way is complete Java configuration:
+
+- First add dependency for `Hikari` DataSource:
+
+```kotlin
+dependencies {
+    //...
+    implementation("com.zaxxer:HikariCP:6.1.0")
+}
+```
+
+- Second implement `PersistenceUnitInfo` interface by completing next methods only 
+  and leave other methods returning `null`:
+```java
+public class ArtSchoolPersistenceUnitInfo implements PersistenceUnitInfo {
+
+  @Override
+  public String getPersistenceUnitName() {
+    return "art_school";
+  }
+
+  @Override
+  public String getPersistenceProviderClassName() {
+    return HibernatePersistenceProvider.class.getName();
+  }
+
+  @Override
+  public PersistenceUnitTransactionType getTransactionType() {
+    return PersistenceUnitTransactionType.RESOURCE_LOCAL;
+  }
+
+  @Override
+  public DataSource getNonJtaDataSource() {
+    HikariDataSource dataSource = new HikariDataSource();
+    dataSource.setJdbcUrl("jdbc:postgresql://localhost:5432/hibernate");
+    dataSource.setUsername(System.getenv("POSTGRESQL_USER_NAME"));
+    dataSource.setPassword(System.getenv("POSTGRESQL_USER_PASSWORD"));
+    return dataSource;
+  }
+
+  @Override
+  public List<String> getManagedClassNames() {
+    return List.of(ArtStudent.class.getName(), 
+                   ArtTeacher.class.getName(), 
+                   ArtClass.class.getName(), 
+                   ArtReview.class.getName());
+  }
+
+  // leave other methods with no implementation
+  @Override
+  public SharedCacheMode getSharedCacheMode() {
+    return null; 
+  }
+  
+  // ...
+}
+```
+
+- And use it to create `EntityManagerFactory` like this:
+```java
+EntityManagerFactory entityManagerFactory = new HibernatePersistenceProvider()
+        .createContainerEntityManagerFactory(new ArtSchoolPersistenceUnitInfo(), new HashMap());
+```
+
+### Hibernate practice
+
+Now, we are ready to create DB tables and implement JPA layer in java.
 
 #### Challenge: Define "Art School" schema in PostgreSQL
 
@@ -177,6 +269,8 @@ public class ArtTeacher {
 }
 ```
 
+Full list of Entities is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/entity).
+
 #### Challenge: "Art School" entity operations with Hibernate
 
 **Task**: 
@@ -217,5 +311,26 @@ Implement java methods for next operations
   - Set new name for that object
   - Commit transaction using `EntityManager.getTransaction().commit()` method
   - Make sure name of existing Student is updated in DB
+
+**Solution example**: 
+    
+```java
+public class PersistDemo {
+  public static void main(String[] args) {
+
+    try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
+         EntityManager entityManager = entityManagerFactory.createEntityManager()) { // session is opened here once EntityManager is provided
+      entityManager.getTransaction().begin(); // begin Transaction in order to follow ACID within this method
+
+      ArtStudent artStudent = new ArtStudent(0, "John5"); // id = 0 is just default value, will be overridden later
+      entityManager.persist(artStudent); // logging: 'Hibernate: insert into art_school.art_students (student_name) values (?) returning student_id'
+      // changes are in Hibernate context (in Java app)
+      entityManager.getTransaction().commit(); // actual insert to DB happens here
+    } // session is closed here by entityManager.close()
+  }
+}
+```  
+
+Full list of operations is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/operation).
 
 
