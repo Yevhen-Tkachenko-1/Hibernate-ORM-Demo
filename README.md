@@ -43,7 +43,7 @@ under `src/main/resources/META-INF` directory like this:
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="3.0" xmlns="https://jakarta.ee/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
     <!-- Define Persistence Unit -->
-    <persistence-unit name="jpa_and_hibernate" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="art_school" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver" />
@@ -176,4 +176,46 @@ public class ArtTeacher {
     private String name;
 }
 ```
+
+#### Challenge: "Art School" entity operations with Hibernate
+
+**Task**: 
+
+Implement java methods for next operations
+- Save new Student object to DB: 
+  - Create new Student object
+  - Save that object using `EntityManager.persist()` method
+  - Commit transaction using `EntityManager.getTransaction().commit()` method
+  - Make sure new Student is saved to DB
+- Update existing Student in DB: 
+  - Get Student object using `EntityManager.find()` method
+  - Set new name for that object
+  - Commit transaction using `EntityManager.getTransaction().commit()` method
+  - Make sure new name is saved to DB
+- Attach new Student object:
+  - Create new Student object
+  - Attach that Student object to context using `EntityManager.merge()` method
+  - Commit transaction using `EntityManager.getTransaction().commit()` method
+  - Make sure new Student is saved to DB
+- Attach existing Student object:
+  - Create new Student object with existing `id`
+  - Set new name for that object
+  - Attach that Student object to context using `EntityManager.merge()` method
+  - Commit transaction using `EntityManager.getTransaction().commit()` method
+  - Make sure name of existing Student is updated in DB
+- Detach existing Student in DB:
+  - Get Student object using `EntityManager.find()` method
+  - Set new name `John` for that object
+  - Detach that object using `EntityManager.detach()` method
+  - Set new name `Peter` for that object
+  - Commit transaction using `EntityManager.getTransaction().commit()` method
+  - Make sure `John` is only name saved to that Student in DB
+- Detach and Attach existing Student:
+  - Get Student object using `EntityManager.find()` method
+  - Detach that object using `EntityManager.detach()` method
+  - Attach that object using `EntityManager.merge()` method
+  - Set new name for that object
+  - Commit transaction using `EntityManager.getTransaction().commit()` method
+  - Make sure name of existing Student is updated in DB
+
 
