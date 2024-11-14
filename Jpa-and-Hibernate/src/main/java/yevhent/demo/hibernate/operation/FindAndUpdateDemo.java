@@ -14,9 +14,12 @@ public class FindAndUpdateDemo {
 
             ArtStudent artStudent = entityManager.find(ArtStudent.class, 1);
             // Hibernate: select as1_0.student_id,as1_0.student_name from art_school.art_students as1_0 where as1_0.student_id=?
+            // call to DB
             artStudent.setName("James");
+            // Entity is already in Hibernate context, so no statements printed and Hibernate just does dirty checking
             entityManager.getTransaction().commit();
             // Hibernate: update art_school.art_students set student_name=? where student_id=?
+            // call to DB
         }
     }
 }
