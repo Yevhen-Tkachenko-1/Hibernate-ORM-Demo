@@ -22,5 +22,6 @@ public class PersistAndCreateDemo {
             // But changes remains in Hibernate context (in Java app)
             entityManager.getTransaction().commit(); // actual insert to DB
         } // session is closed here by entityManager.close()
+        // In case transaction is not committed, calling entityManager.close() also discards any staged changes in persistent context.
     }
 }
