@@ -280,12 +280,12 @@ Full list of Entities is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hib
 
 Implement java methods for next operations
 - Persist and Create new Student in DB using `EntityManager.persist()` method
-- Attach and Create new Student in DB using `EntityManager.merge()` method
-- Proxy and Update existing Student in DB using `EntityManager.getReference()` and `ArtClass.setName()` methods
+- Merge and Create new Student in DB using `EntityManager.merge()` method
+- Reference and Update existing Student in DB using `EntityManager.getReference()` and `ArtClass.setName()` methods
 - Find and Update existing Student in DB using `EntityManager.find()` and `ArtClass.setName()` methods
-- Attach and Update existing Student object using `EntityManager.merge()` method
-- Delete existing Student by ID using `EntityManager.getReference()` and `EntityManager.remove()` methods
-- Find, Detach and Update existing Student in DB using `EntityManager.find()`, `EntityManager.detach()` and `ArtClass.setName()` methods
+- Merge and Update existing Student object using `EntityManager.merge()` method
+- Reference and Delete existing Student by ID using `EntityManager.getReference()` and `EntityManager.remove()` methods
+- Find and Delete existing Student by ID using `EntityManager.find()` and `EntityManager.remove()` methods
 
 **Solution examples**:
     
@@ -313,7 +313,7 @@ public class PersistAndCreateDemo {
       // "Hibernate: insert into art_school.art_students (student_name) values (?) returning student_id"
       // But changes remains in Hibernate context (in Java app)
       entityManager.getTransaction().commit(); // actual insert to DB
-    } // session is closed here by entityManager.close()
+    } // session is closed by entityManager.close()
     // In case transaction is not committed, calling entityManager.close() also discards any staged changes in persistent context.
   }
 }
@@ -326,3 +326,5 @@ The Student is saved to DB:
 Full list of operations is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/operation).
 
 
+
+- Find, Detach and Update existing Student in DB using `EntityManager.find()`, `EntityManager.detach()` and `ArtClass.setName()` methods
