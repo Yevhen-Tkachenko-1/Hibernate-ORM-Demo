@@ -12,7 +12,7 @@ public class ReferenceAndUpdateDemo {
              EntityManager entityManager = entityManagerFactory.createEntityManager()) {
             entityManager.getTransaction().begin();
 
-            // ArtStudent with ID = 1 must be persisted in DB before running MergeAndUpdateDemo
+            // ArtStudent with ID = 1 must be persisted in DB before running ReferenceAndUpdateDemo
             ArtStudent artStudent = entityManager.getReference(ArtStudent.class, 1);
             // ArtStudent is just proxy object (with ID field only) implementing lazy loading
             artStudent.setName("Referenced and Updated John");
