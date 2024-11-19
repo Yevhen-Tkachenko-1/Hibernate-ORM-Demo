@@ -359,3 +359,25 @@ public class MergeAndUpdateDemo {
 }
 ```
 
+Full list of operations is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/context).
+
+
+
+#### Challenge: Entity Relations with Hibernate
+
+*Task*:
+Update java entity classes and implement java demo methods for next relations:
+
+- Implement unidirectional one-to-one relationship between `ArtClass` and `ArtTeacher` tables using `@OneToOne` and `@JoinColumn`.
+  Consider the ArtClass entity as the owner of the relationship.
+- Implement one-to-many relationship between `ArtTeacher` and `ArtReview` tables using `@OneToMany`, `@ManyToOne` and `@JoinColumn`.
+  Consider the `ArtReview` as the owner of the relationship)
+- Implement a unidirectional many-to-many relationship between `ArtClass` and `ArtStudent` using `@ManyToMany`, `@JoinTable` and `@JoinColumn`.
+  Consider the `ArtClass` as the owner of the relationship.
+
+#### Challenge: Hibernate Exceptions
+
+*Task*:
+
+Implement java methods that throws next Exceptions:
+
