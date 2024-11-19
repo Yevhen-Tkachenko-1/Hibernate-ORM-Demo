@@ -9,8 +9,8 @@ public class MergeAndCreateDemo {
     public static void main(String[] args) {
 
         try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
-             EntityManager entityManager = entityManagerFactory.createEntityManager()) { // session is opened once EntityManager is provided
-            entityManager.getTransaction().begin(); // begin Transaction in order to follow ACID within this method
+             EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+            entityManager.getTransaction().begin();
             // ID should be 0 for Entity creation.
             // Providing non-zero existing ID will cause SELECT and UPDATE queries
             // Providing non-zero non-existing ID will lead to OptimisticLockException
@@ -22,6 +22,6 @@ public class MergeAndCreateDemo {
             // "Hibernate: insert into art_school.art_students (student_name) values (?) returning student_id"
             // But changes remains in Hibernate context (in Java app)
             entityManager.getTransaction().commit(); // actual insert to DB
-        } // session is closed here by entityManager.close()
+        }
     }
 }
