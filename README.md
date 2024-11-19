@@ -287,9 +287,7 @@ Implement java methods for next operations
 - Reference and Delete existing Student by ID using `EntityManager.getReference()` and `EntityManager.remove()` methods
 - Find and Delete existing Student by ID using `EntityManager.find()` and `EntityManager.remove()` methods
 
-**Solution examples**:
-    
-- Create using `EntityManager.persist()`
+**Solution example**:
 
 ```java
 import jakarta.persistence.EntityManager;
@@ -325,6 +323,39 @@ The Student is saved to DB:
 
 Full list of operations is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/operation).
 
+#### Challenge: Persistent Context operations in Hibernate
 
+**Task**:
 
+Implement java methods for next operations
+- Merge and Update existing Student in DB using `EntityManager.merge()` and `ArtClass.setName()` methods
 - Find, Detach and Update existing Student in DB using `EntityManager.find()`, `EntityManager.detach()` and `ArtClass.setName()` methods
+- Find, Update and Refresh existing Student in DB using `EntityManager.find()`, `ArtClass.setName()` and `EntityManager.refresh()` methods
+
+**Solution example**:
+
+```java
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import yevhent.demo.hibernate.configuration.ArtSchoolFactory;
+import yevhent.demo.hibernate.entity.ArtStudent;
+
+public class MergeAndUpdateDemo {
+  public static void main(String[] args) {
+
+    try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
+         EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+      entityManager.getTransaction().begin();
+
+      // Consider we have exact same ArtStudent in DB:
+      ArtStudent artStudent = new ArtStudent(1, "John");
+      // ArtStudent Entity is out of Context
+      artStudent = entityManager.merge(artStudent); // SELECT query to DB
+      // Now Entity is synchronized and any further changes will be tracked in Context
+      artStudent.setName("Updated John"); // new Name is in context
+      entityManager.getTransaction().commit(); // UPDATE query to DB
+    }
+  }
+}
+```
+
