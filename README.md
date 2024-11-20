@@ -1,28 +1,45 @@
-# Hibernate ORM Demo
+## JPA implementation with Hibernate
 
 Learn and play with Hibernate to map Java objects and PostgreSQL data
 
 Implemented based on LinkedIn learning course:
 [Java Persistence with JPA and Hibernate](https://www.linkedin.com/learning/java-persistence-with-jpa-and-hibernate)
 
-## JPA implementation with Hibernate
-
 **Tech stack**:
-- JPA
+
+- Java 17
+- JPA (Jakarta Persistence API)
 - Hibernate
 - PostgreSQL
+- Gradle
 
-### Prepare
+**Content**:
+* [Project setup](#project-setup)
+  * [Prepare PostgreSQL](#prepare-postgresql)
+  * [Gradle dependencies](#gradle-dependencies)
+  * [Persistence Unit: XML configuration](#persistence-unit-xml-configuration-)
+  * [Persistence Unit: Java configuration](#persistence-unit-java-configuration)
+* [Hibernate practice](#hibernate-practice)
+  * [Challenge: "Art School" schema in PostgreSQL](#challenge-art-school-schema-in-postgresql)
+  * [Challenge: "Art School" entities in Java](#challenge-art-school-entities-in-java)
+  * [Challenge: CRUD operations](#challenge-crud-operations)
+  * [Challenge: Persistent Context operations](#challenge-persistent-context-operations)
+  * [Challenge: Entity Relations](#challenge-entity-relations)
+  * [Challenge: JPQL queries](#challenge-jpql-queries)
+  * [Challenge: Repository Pattern](#challenge-repository-pattern)
+  * [Challenge: Hibernate Exceptions](#challenge-hibernate-exceptions)
+
+### Project setup
+
+#### Prepare PostgreSQL
 
 - Install PostgreSQL Server on your local machine
 - Install PostgreSQL Client: `pgAdmin` desktop app or `psql` console tool
 - Connect to PostgreSQL Server by any client
 - Create `hibernate` database to be used for this demo and switch to it
 - Create env variables on your machine: `POSTGRESQL_USER_NAME`, `POSTGRESQL_USER_PASSWORD`
-  in order to allow java app connect to `hibernate` database 
+  in order to allow java app connect to `hibernate` database
   and not to store credentials in repository
-
-### Project setup
 
 #### Gradle dependencies
 
@@ -32,23 +49,25 @@ Having stand-alone Java application (running without web server) we will use nex
 dependencies {
     // https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-core
     implementation("org.hibernate.orm:hibernate-core:6.6.1.Final")
-    
+
     // https://mvnrepository.com/artifact/org.postgresql/postgresql
     implementation("org.postgresql:postgresql:42.7.4")
-    
+
     compileOnly("org.projectlombok:lombok:1.18.28")
     annotationProcessor("org.projectlombok:lombok:1.18.28")
 }
 ```
 
-#### Persistence Unit configuration: XML
+#### Persistence Unit: XML configuration 
 
 We should have JPA-Hibernate configuration in `persistance.xml` file
 under `src/main/resources/META-INF` directory like this:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence version="3.0" xmlns="https://jakarta.ee/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
+<persistence version="3.0" xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
     <!-- Define Persistence Unit -->
     <persistence-unit name="art_school" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
@@ -57,11 +76,11 @@ under `src/main/resources/META-INF` directory like this:
         <class>yevhent.demo.hibernate.entity.ArtClass</class>
         <class>yevhent.demo.hibernate.entity.ArtReview</class>
         <properties>
-            <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver" />
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/hibernate" />
-            <property name="jakarta.persistence.jdbc.user" value="${env.POSTGRESQL_USER_NAME}" />
-            <property name="jakarta.persistence.jdbc.password" value="${env.POSTGRESQL_USER_PASSWORD}" />
-            <property name="hibernate.show_sql" value="true" />
+            <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/hibernate"/>
+            <property name="jakarta.persistence.jdbc.user" value="${env.POSTGRESQL_USER_NAME}"/>
+            <property name="jakarta.persistence.jdbc.password" value="${env.POSTGRESQL_USER_PASSWORD}"/>
+            <property name="hibernate.show_sql" value="true"/>
         </properties>
     </persistence-unit>
 </persistence>
@@ -69,21 +88,22 @@ under `src/main/resources/META-INF` directory like this:
 
 Alternatively, we can define ENV properties separately like this
 (in my case ENV variables was not loaded from `persistence.xml`, so I had to use such way):
+
 ```java
 public class ArtSchoolFactory {
 
-  public static EntityManagerFactory createEntityManagerFactory() {
-    Map<String, String> properties = new HashMap<>();
-    properties.put("jakarta.persistence.jdbc.user", System.getenv("POSTGRESQL_USER_NAME"));
-    properties.put("jakarta.persistence.jdbc.password", System.getenv("POSTGRESQL_USER_PASSWORD"));
-    return Persistence.createEntityManagerFactory("art_school", properties);
-  }
+    public static EntityManagerFactory createEntityManagerFactory() {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("jakarta.persistence.jdbc.user", System.getenv("POSTGRESQL_USER_NAME"));
+        properties.put("jakarta.persistence.jdbc.password", System.getenv("POSTGRESQL_USER_PASSWORD"));
+        return Persistence.createEntityManagerFactory("art_school", properties);
+    }
 } 
 ```
 
-#### Persistence Unit configuration: Java
+#### Persistence Unit: Java configuration
 
-Another way is complete Java configuration:
+Another way is complete Java code:
 
 - First add dependency for `Hikari` DataSource:
 
@@ -94,54 +114,56 @@ dependencies {
 }
 ```
 
-- Second implement `PersistenceUnitInfo` interface by completing next methods only 
+- Second implement `PersistenceUnitInfo` interface by completing next methods only
   and leave other methods returning `null`:
+
 ```java
 public class ArtSchoolPersistenceUnitInfo implements PersistenceUnitInfo {
 
-  @Override
-  public String getPersistenceUnitName() {
-    return "art_school";
-  }
+    @Override
+    public String getPersistenceUnitName() {
+        return "art_school";
+    }
 
-  @Override
-  public String getPersistenceProviderClassName() {
-    return HibernatePersistenceProvider.class.getName();
-  }
+    @Override
+    public String getPersistenceProviderClassName() {
+        return HibernatePersistenceProvider.class.getName();
+    }
 
-  @Override
-  public PersistenceUnitTransactionType getTransactionType() {
-    return PersistenceUnitTransactionType.RESOURCE_LOCAL;
-  }
+    @Override
+    public PersistenceUnitTransactionType getTransactionType() {
+        return PersistenceUnitTransactionType.RESOURCE_LOCAL;
+    }
 
-  @Override
-  public DataSource getNonJtaDataSource() {
-    HikariDataSource dataSource = new HikariDataSource();
-    dataSource.setJdbcUrl("jdbc:postgresql://localhost:5432/hibernate");
-    dataSource.setUsername(System.getenv("POSTGRESQL_USER_NAME"));
-    dataSource.setPassword(System.getenv("POSTGRESQL_USER_PASSWORD"));
-    return dataSource;
-  }
+    @Override
+    public DataSource getNonJtaDataSource() {
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setJdbcUrl("jdbc:postgresql://localhost:5432/hibernate");
+        dataSource.setUsername(System.getenv("POSTGRESQL_USER_NAME"));
+        dataSource.setPassword(System.getenv("POSTGRESQL_USER_PASSWORD"));
+        return dataSource;
+    }
 
-  @Override
-  public List<String> getManagedClassNames() {
-    return List.of(ArtStudent.class.getName(), 
-                   ArtTeacher.class.getName(), 
-                   ArtClass.class.getName(), 
-                   ArtReview.class.getName());
-  }
+    @Override
+    public List<String> getManagedClassNames() {
+        return List.of(ArtStudent.class.getName(),
+                ArtTeacher.class.getName(),
+                ArtClass.class.getName(),
+                ArtReview.class.getName());
+    }
 
-  // leave other methods with no implementation
-  @Override
-  public SharedCacheMode getSharedCacheMode() {
-    return null; 
-  }
-  
-  // ...
+    // leave other methods with no implementation
+    @Override
+    public SharedCacheMode getSharedCacheMode() {
+        return null;
+    }
+
+    // ...
 }
 ```
 
 - And use it to create `EntityManagerFactory` like this:
+
 ```java
 EntityManagerFactory entityManagerFactory = new HibernatePersistenceProvider()
         .createContainerEntityManagerFactory(new ArtSchoolPersistenceUnitInfo(), new HashMap());
@@ -151,9 +173,10 @@ EntityManagerFactory entityManagerFactory = new HibernatePersistenceProvider()
 
 Now, we are ready to create DB tables and implement JPA layer in java.
 
-#### Challenge: Define "Art School" schema in PostgreSQL
+#### Challenge: "Art School" schema in PostgreSQL
 
 **Task**:
+
 - Create schema `art_school` in `hibernate` database.
 - Create table `art_teacher` with fields `id` as primary key, `name`.
 - Create table `art_student` with fields `id` as primary key, `name`.
@@ -164,10 +187,12 @@ Now, we are ready to create DB tables and implement JPA layer in java.
   and `teacher_id` as reference to `teacher` table.
 
 **Solution**:
+
 ```sql
 CREATE SCHEMA IF NOT EXISTS art_school
     AUTHORIZATION postgres;
 ```
+
 ```sql
 CREATE TABLE IF NOT EXISTS art_school.art_teachers(
     teacher_id   serial,
@@ -176,6 +201,7 @@ CREATE TABLE IF NOT EXISTS art_school.art_teachers(
     PRIMARY KEY (teacher_id)
 );
 ```
+
 ```sql
 CREATE TABLE IF NOT EXISTS art_school.art_students(
     student_id   serial,
@@ -184,6 +210,7 @@ CREATE TABLE IF NOT EXISTS art_school.art_students(
     PRIMARY KEY (student_id)
 );
 ```
+
 ```sql
 CREATE TABLE IF NOT EXISTS art_school.art_classes(
     class_id    serial,
@@ -198,6 +225,7 @@ CREATE TABLE IF NOT EXISTS art_school.art_classes(
         ON DELETE RESTRICT
 );
 ```
+
 ```sql
 CREATE TABLE IF NOT EXISTS art_school.students_classes_mapping(
     student_id int,
@@ -214,6 +242,7 @@ CREATE TABLE IF NOT EXISTS art_school.students_classes_mapping(
         ON DELETE RESTRICT
 );
 ```
+
 ```sql
 CREATE TABLE IF NOT EXISTS art_school.art_reviews(
     review_id      serial,
@@ -233,7 +262,7 @@ Data structure looks like this in pgAdmin:
 
 ![](image/1.PNG)
 
-#### Challenge: Define "Art School" classes in Java
+#### Challenge: "Art School" entities in Java
 
 **Task**:
 
@@ -274,7 +303,7 @@ public class ArtTeacher {
 
 Full list of Entities is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/entity).
 
-#### Challenge: CRUD operations with Hibernate
+#### Challenge: CRUD operations
 
 **Task**:
 
@@ -298,24 +327,24 @@ import yevhent.demo.hibernate.configuration.ArtSchoolFactory;
 import yevhent.demo.hibernate.entity.ArtStudent;
 
 public class PersistAndCreateDemo {
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
-         EntityManager entityManager = entityManagerFactory.createEntityManager()) { // session is opened once EntityManager is provided
-      entityManager.getTransaction().begin(); // begin Transaction in order to follow ACID within this method
-      // ID should be 0 for Entity creation.
-      // Providing non-zero existing (or non-existing) ID will lead to EntityExistsException
-      // Based on our Entity GenerationType = IDENTITY, Hibernate knows ID generation strategy, so creates insert statement with no ID.
-      // Finally, ID is generated by PostgreSQL starting from 1.
-      ArtStudent artStudent = new ArtStudent(0, "Persisted John");
-      entityManager.persist(artStudent);
-      // Hibernate prepares statement:
-      // "Hibernate: insert into art_school.art_students (student_name) values (?) returning student_id"
-      // But changes remains in Hibernate context (in Java app)
-      entityManager.getTransaction().commit(); // actual insert to DB
-    } // session is closed by entityManager.close()
-    // In case transaction is not committed, calling entityManager.close() also discards any staged changes in persistent context.
-  }
+        try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
+             EntityManager entityManager = entityManagerFactory.createEntityManager()) { // session is opened once EntityManager is provided
+            entityManager.getTransaction().begin(); // begin Transaction in order to follow ACID within this method
+            // ID should be 0 for Entity creation.
+            // Providing non-zero existing (or non-existing) ID will lead to EntityExistsException
+            // Based on our Entity GenerationType = IDENTITY, Hibernate knows ID generation strategy, so creates insert statement with no ID.
+            // Finally, ID is generated by PostgreSQL starting from 1.
+            ArtStudent artStudent = new ArtStudent(0, "Persisted John");
+            entityManager.persist(artStudent);
+            // Hibernate prepares statement:
+            // "Hibernate: insert into art_school.art_students (student_name) values (?) returning student_id"
+            // But changes remains in Hibernate context (in Java app)
+            entityManager.getTransaction().commit(); // actual insert to DB
+        } // session is closed by entityManager.close()
+        // In case transaction is not committed, calling entityManager.close() also discards any staged changes in persistent context.
+    }
 }
 ```
 
@@ -325,14 +354,17 @@ The Student is saved to DB:
 
 Full list of operations is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/operation).
 
-#### Challenge: Persistent Context operations in Hibernate
+#### Challenge: Persistent Context operations
 
 **Task**:
 
 Implement java methods for next operations
+
 - Merge and Update existing Student in DB using `EntityManager.merge()` and `ArtClass.setName()` methods
-- Find, Detach and Update existing Student in DB using `EntityManager.find()`, `EntityManager.detach()` and `ArtClass.setName()` methods
-- Find, Update and Refresh existing Student in DB using `EntityManager.find()`, `ArtClass.setName()` and `EntityManager.refresh()` methods
+- Find, Detach and Update existing Student in DB using `EntityManager.find()`, `EntityManager.detach()`
+  and `ArtClass.setName()` methods
+- Find, Update and Refresh existing Student in DB using `EntityManager.find()`, `ArtClass.setName()`
+  and `EntityManager.refresh()` methods
 
 **Solution example**:
 
@@ -343,37 +375,37 @@ import yevhent.demo.hibernate.configuration.ArtSchoolFactory;
 import yevhent.demo.hibernate.entity.ArtStudent;
 
 public class MergeAndUpdateDemo {
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
-         EntityManager entityManager = entityManagerFactory.createEntityManager()) {
-      entityManager.getTransaction().begin();
+        try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
+             EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+            entityManager.getTransaction().begin();
 
-      // Consider we have exact same ArtStudent in DB:
-      ArtStudent artStudent = new ArtStudent(1, "John");
-      // ArtStudent Entity is out of Context
-      artStudent = entityManager.merge(artStudent); // SELECT query to DB
-      // Now Entity is synchronized and any further changes will be tracked in Context
-      artStudent.setName("Updated John"); // new Name is in context
-      entityManager.getTransaction().commit(); // UPDATE query to DB
+            // Consider we have exact same ArtStudent in DB:
+            ArtStudent artStudent = new ArtStudent(1, "John");
+            // ArtStudent Entity is out of Context
+            artStudent = entityManager.merge(artStudent); // SELECT query to DB
+            // Now Entity is synchronized and any further changes will be tracked in Context
+            artStudent.setName("Updated John"); // new Name is in context
+            entityManager.getTransaction().commit(); // UPDATE query to DB
+        }
     }
-  }
 }
 ```
 
 Full list of operations is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/context).
 
-#### Challenge: Entity Relations with Hibernate
+#### Challenge: Entity Relations
 
 **Given**:
 
 Considered that we already have proper database schema implemented,
-where tables have required relations using Foreign Key (FK), 
+where tables have required relations using Foreign Key (FK),
 like `FOREIGN KEY (theacher_id)` in `art_classes` table.
 In DB, we need only one FK for each relation of table pair.
-Regarding many-to-many relation, we should have additional Mapping table, 
+Regarding many-to-many relation, we should have additional Mapping table,
 which is also covered by our DB schema above, it's `students_classes_mapping` table.
-For the Java side, when implementing unidirectional relation, 
+For the Java side, when implementing unidirectional relation,
 we reflect the same state as in DB:
 table that holds FK corresponds to Java Entity which "knows" about referenced Entity.
 In case of bidirectional relation, we additionally add back reference to original Entity.
@@ -385,10 +417,13 @@ Also, we don't need Java Entity for Mapping table.
 
 Update java entity classes for next relations:
 
-- Implement unidirectional one-to-one relationship between `ArtClass` and `ArtTeacher` using `@OneToOne` and `@JoinColumn`.
+- Implement unidirectional one-to-one relationship between `ArtClass` and `ArtTeacher` using `@OneToOne`
+  and `@JoinColumn`.
   Make `ArtClass` refer to `ArtTeacher`.
-- Implement bidirectional one-to-many relationship between `ArtTeacher` and `ArtReview` using `@OneToMany`, `@ManyToOne` and `@JoinColumn`.
-- Implement unidirectional many-to-many relationship between `ArtClass` and `ArtStudent` using `@ManyToMany`, `@JoinTable` and `@JoinColumn`.
+- Implement bidirectional one-to-many relationship between `ArtTeacher` and `ArtReview` using `@OneToMany`, `@ManyToOne`
+  and `@JoinColumn`.
+- Implement unidirectional many-to-many relationship between `ArtClass` and `ArtStudent`
+  using `@ManyToMany`, `@JoinTable` and `@JoinColumn`.
   Make `ArtStudent` refer to `ArtClass`.
 
 Implement java demo methods for next cases:
@@ -412,10 +447,10 @@ import jakarta.persistence.OneToOne;
 @Table(schema = "art_school", name = "art_classes")
 // ...
 public class ArtClass {
-  // ...
-  @OneToOne
-  @JoinColumn(name = "teacher_id") // Reflects FOREIGN KEY (teacher_id) REFERENCES art_teachers(teacher_id)
-  private ArtTeacher artTeacher;
+    // ...
+    @OneToOne
+    @JoinColumn(name = "teacher_id") // Reflects FOREIGN KEY (teacher_id) REFERENCES art_teachers(teacher_id)
+    private ArtTeacher artTeacher;
 }
 ```
 
@@ -492,6 +527,36 @@ public class SelectOneToOneDemo {
 
 Full list of relations is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/relation).
 
+#### Challenge: JPQL queries
+
+**Task**:
+Using JPQL queries implement Java methods to select next data:
+
+- All the students
+- Students who are attending classes on Monday
+- Average rating for the teacher named “White”
+- Average ratings for teachers (Hint: use the GROUP BY clause)
+- Average ratings for teachers arranged in the descending order of average rating (Hint: use the ORDER BY clause)
+- Average ratings for teachers having an average rating greater than 3, arranged in the descending order of average
+  rating (Hint: use the HAVING clause)
+
+**Solution example**:
+
+```java
+
+```
+
+#### Challenge: Repository Pattern
+
+**Task**:
+
+Create Java class that implements Repository Pattern by having CRUD operation methods.
+
+**Solution example**:
+
+```java
+
+```
 
 #### Challenge: Hibernate Exceptions
 
