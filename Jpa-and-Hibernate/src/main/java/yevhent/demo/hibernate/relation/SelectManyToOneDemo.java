@@ -6,9 +6,6 @@ import yevhent.demo.hibernate.configuration.ArtSchoolFactory;
 import yevhent.demo.hibernate.entity.ArtReview;
 import yevhent.demo.hibernate.entity.ArtTeacher;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 /**
  * Bidirectional relation between Teacher and Review,
  * where `art_reviews` table has FK as reference to `art_teachers`
