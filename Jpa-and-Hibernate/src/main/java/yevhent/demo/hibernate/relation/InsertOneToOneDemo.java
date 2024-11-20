@@ -19,7 +19,8 @@ public class InsertOneToOneDemo {
             entityManager.getTransaction().begin();
 
             ArtTeacher artTeacher = new ArtTeacher(0, "John");
-            ArtClass artClass = new ArtClass(0, "Painting", "Monday", artTeacher);
+            ArtClass artClass = new ArtClass(0, "Painting", "Monday");
+            artClass.setArtTeacher(artTeacher);
             entityManager.persist(artTeacher);
             // Hibernate: insert into art_school.art_teachers (teacher_name) values (?) returning teacher_id
             entityManager.persist(artClass);
