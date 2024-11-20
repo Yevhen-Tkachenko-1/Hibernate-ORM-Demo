@@ -499,3 +499,18 @@ Full list of relations is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hi
 
 Implement java methods that throws next Exceptions:
 
+- `javax.persistence.TransactionRequiredException`
+- `javax.persistence.EntityExistsException`
+- `javax.persistence.EntityNotFoundException`
+- `javax.persistence.PersistenceException`
+- `javax.persistence.RollbackException`
+- `javax.persistence.OptimisticLockException`
+- `javax.persistence.NoResultException`
+- `javax.persistence.NonUniqueResultException`
+- `javax.persistence.QueryTimeoutException`
+- `org.hibernate.HibernateException`
+- `org.hibernate.TransactionException`
+- `org.hibernate.QueryException`
+- `org.hibernate.ObjectNotFoundException`
+- `org.hibernate.LazyInitializationException`
+- `org.hibernate.StaleStateException`
