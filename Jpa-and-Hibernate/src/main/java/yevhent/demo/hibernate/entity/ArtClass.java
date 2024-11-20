@@ -14,6 +14,12 @@ import lombok.Setter;
 @Getter
 public class ArtClass {
 
+    public ArtClass(int id, String name, String weekDay) {
+        this.id = id;
+        this.name = name;
+        this.weekDay = weekDay;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "class_id")
