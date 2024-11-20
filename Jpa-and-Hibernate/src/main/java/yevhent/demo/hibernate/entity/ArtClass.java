@@ -25,4 +25,7 @@ public class ArtClass {
     @Column(name = "week_day")
     private String weekDay;
 
+    @OneToOne
+    @JoinColumn(name = "teacher_id") // In `art_classes` table: FOREIGN KEY (teacher_id) REFERENCES art_teachers(teacher_id)
+    private ArtTeacher artTeacher;
 }
