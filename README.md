@@ -389,7 +389,7 @@ Update java entity classes for next relations:
   Make `ArtClass` refer to `ArtTeacher`.
 - Implement bidirectional one-to-many relationship between `ArtTeacher` and `ArtReview` using `@OneToMany`, `@ManyToOne` and `@JoinColumn`.
 - Implement unidirectional many-to-many relationship between `ArtClass` and `ArtStudent` using `@ManyToMany`, `@JoinTable` and `@JoinColumn`.
-  Make `ArtClass` refer to `ArtStudent`.
+  Make `ArtStudent` refer to `ArtClass`.
 
 Implement java demo methods for next cases:
 
