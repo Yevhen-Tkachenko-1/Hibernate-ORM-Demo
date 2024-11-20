@@ -25,4 +25,8 @@ public class ArtReview {
     @Column(name = "rating")
     private int rating;
 
+    @ManyToOne
+    @JoinColumn(name = "teacher_id") // Reflects FOREIGN KEY (teacher_id) REFERENCES art_school.art_teachers(teacher_id)
+    private ArtTeacher artTeacher;
+
 }
