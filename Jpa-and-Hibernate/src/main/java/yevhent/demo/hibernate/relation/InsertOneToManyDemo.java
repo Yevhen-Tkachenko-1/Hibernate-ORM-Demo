@@ -11,9 +11,10 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * Unidirectional relation between Teacher and Class,
- * where `art_classes` table has FK as reference to `art_teachers`
- * and ArtClass object contains ArtTeacher object
+ * Bidirectional relation between Teacher and Review,
+ * where `art_reviews` table has FK as reference to `art_teachers`
+ * and ArtTeacher object contains list of ArtReview objects
+ * and ArtReview object contains ArtTeacher object
  */
 public class InsertOneToManyDemo {
     public static void main(String[] args) {
