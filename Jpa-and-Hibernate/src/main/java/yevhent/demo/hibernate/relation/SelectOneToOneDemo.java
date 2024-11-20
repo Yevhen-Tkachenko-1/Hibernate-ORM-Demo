@@ -25,8 +25,8 @@ public class SelectOneToOneDemo {
             String className = artClass.getName();
             String classWeekDay = artClass.getWeekDay();
             String teacherName = artClass.getArtTeacher().getName();
-            System.out.println(String.format("Class %s is scheduled on %s and has Teacher %s.",
-                    className, classWeekDay, teacherName));
+            System.out.printf("Class %s is scheduled on %s and has Teacher %s.%n",
+                    className, classWeekDay, teacherName);
             // Log output: "Class Painting is scheduled on Monday and has Teacher John."
         }
     }
