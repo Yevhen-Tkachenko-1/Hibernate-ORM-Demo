@@ -189,10 +189,10 @@ CREATE TABLE IF NOT EXISTS art_school.art_classes(
     class_id    serial,
     class_name  varchar(255),
     week_day    varchar(255),
-    theacher_id int,
+    teacher_id  int,
 
     PRIMARY KEY (class_id),
-    FOREIGN KEY (theacher_id) REFERENCES art_school.art_teachers(teacher_id) 
+    FOREIGN KEY (teacher_id) REFERENCES art_school.art_teachers(teacher_id) 
         MATCH SIMPLE 
         ON UPDATE RESTRICT
         ON DELETE RESTRICT
@@ -279,8 +279,10 @@ Full list of Entities is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hib
 **Task**:
 
 Implement java methods for next operations
+
 - Persist and Create new Student in DB using `EntityManager.persist()` method
 - Merge and Create new Student in DB using `EntityManager.merge()` method
+- Find existing Student in DB using `EntityManager.find()` method (without manual transaction management)
 - Reference and Update existing Student in DB using `EntityManager.getReference()` and `ArtClass.setName()` methods
 - Find and Update existing Student in DB using `EntityManager.find()` and `ArtClass.setName()` methods
 - Merge and Update existing Student object using `EntityManager.merge()` method
@@ -361,23 +363,139 @@ public class MergeAndUpdateDemo {
 
 Full list of operations is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/context).
 
-
-
 #### Challenge: Entity Relations with Hibernate
 
-*Task*:
-Update java entity classes and implement java demo methods for next relations:
+**Given**:
 
-- Implement unidirectional one-to-one relationship between `ArtClass` and `ArtTeacher` tables using `@OneToOne` and `@JoinColumn`.
-  Consider the ArtClass entity as the owner of the relationship.
-- Implement one-to-many relationship between `ArtTeacher` and `ArtReview` tables using `@OneToMany`, `@ManyToOne` and `@JoinColumn`.
-  Consider the `ArtReview` as the owner of the relationship)
-- Implement a unidirectional many-to-many relationship between `ArtClass` and `ArtStudent` using `@ManyToMany`, `@JoinTable` and `@JoinColumn`.
-  Consider the `ArtClass` as the owner of the relationship.
+Considered that we already have proper database schema implemented,
+where tables have required relations using Foreign Key (FK), 
+like `FOREIGN KEY (theacher_id)` in `art_classes` table.
+In DB, we need only one FK for each relation of table pair.
+Regarding many-to-many relation, we should have additional Mapping table, 
+which is also covered by our DB schema above, it's `students_classes_mapping` table.
+For the Java side, when implementing unidirectional relation, 
+we reflect the same state as in DB:
+table that holds FK corresponds to Java Entity which "knows" about referenced Entity.
+In case of bidirectional relation, we additionally add back reference to original Entity.
+We can use bidirectional relation to access underlying Entities from both sides or
+when there is no FK in table that we have in the first place.
+Also, we don't need Java Entity for Mapping table.
+
+**Task**:
+
+Update java entity classes for next relations:
+
+- Implement unidirectional one-to-one relationship between `ArtClass` and `ArtTeacher` using `@OneToOne` and `@JoinColumn`.
+  Make `ArtClass` refer to `ArtTeacher`.
+- Implement bidirectional one-to-many relationship between `ArtTeacher` and `ArtReview` using `@OneToMany`, `@ManyToOne` and `@JoinColumn`.
+- Implement unidirectional many-to-many relationship between `ArtClass` and `ArtStudent` using `@ManyToMany`, `@JoinTable` and `@JoinColumn`.
+  Make `ArtClass` refer to `ArtStudent`.
+
+Implement java demo methods for next cases:
+
+- Create and save a new pair of `ArtClass` and `ArtTeacher` to DB.
+- Read `ArtTeacher` from DB and get `ArtClass` as its property.
+- Create and save new `ArtTeacher` with set of related `ArtReview`s to DB.
+- Read `ArtTeacher` from DB and get list of `ArtReview`s as its property.
+- Read any `ArtReview` from DB and get `ArtTeacher` as its property.
+- Create and save new sets of `ArtClass`s and `ArtStudent`s to DB.
+- Read any `ArtClass` from DB and get list of `ArtStudent`s as its property.
+
+**Solution example**:
+
+- Changes for Java entity:
+
+```java
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+
+@Table(schema = "art_school", name = "art_classes")
+// ...
+public class ArtClass {
+  // ...
+  @OneToOne
+  @JoinColumn(name = "teacher_id") // Reflects FOREIGN KEY (teacher_id) REFERENCES art_teachers(teacher_id)
+  private ArtTeacher artTeacher;
+}
+```
+
+- Insert demo:
+
+```java
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import yevhent.demo.hibernate.configuration.ArtSchoolFactory;
+import yevhent.demo.hibernate.entity.ArtClass;
+import yevhent.demo.hibernate.entity.ArtTeacher;
+
+/**
+ * Unidirectional relation between Teacher and Class, 
+ * where `art_classes` table has FK as reference to `art_teachers` 
+ * and ArtClass object contains ArtTeacher object
+ */
+public class InsertOneToOneDemo {
+    public static void main(String[] args) {
+
+        try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
+             EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+            entityManager.getTransaction().begin();
+
+            ArtTeacher artTeacher = new ArtTeacher(0, "John");
+            ArtClass artClass = new ArtClass(0, "Painting", "Monday", artTeacher);
+            entityManager.persist(artTeacher);
+            // Hibernate: insert into art_school.art_teachers (teacher_name) values (?) returning teacher_id
+            entityManager.persist(artClass);
+            // Hibernate: insert into art_school.art_classes (teacher_id,class_name,week_day) values (?,?,?) returning class_id
+            entityManager.getTransaction().commit();
+            // insert ArtClass to DB
+            // insert ArtTeacher to DB
+        }
+    }
+}
+```
+
+- Select demo:
+
+```java
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import yevhent.demo.hibernate.configuration.ArtSchoolFactory;
+import yevhent.demo.hibernate.entity.ArtClass;
+
+/**
+ * Unidirectional relation between Teacher and Class,
+ * where `art_classes` table has FK as reference to `art_teachers`
+ * and ArtClass object contains ArtTeacher object
+ */
+public class SelectOneToOneDemo {
+    public static void main(String[] args) {
+
+        try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
+             EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+
+            // ArtClass with ID = 1 and referenced ArtTeacher must be persisted in DB before running SelectOneToOneDemo
+            ArtClass artClass = entityManager.find(ArtClass.class, 1);
+            // Hibernate: select ac1_0.class_id,at1_0.teacher_id,at1_0.teacher_name,ac1_0.class_name,ac1_0.week_day
+            //            from art_school.art_classes ac1_0
+            //            left join art_school.art_teachers at1_0 on at1_0.teacher_id=ac1_0.teacher_id
+            //            where ac1_0.class_id=?
+            String className = artClass.getName();
+            String classWeekDay = artClass.getWeekDay();
+            String teacherName = artClass.getArtTeacher().getName();
+            System.out.printf("Class %s is scheduled on %s and has Teacher %s.%n",
+                    className, classWeekDay, teacherName);
+            // Log output: "Class Painting is scheduled on Monday and has Teacher John."
+        }
+    }
+}
+```
+
+Full list of relations is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/relation).
+
 
 #### Challenge: Hibernate Exceptions
 
-*Task*:
+**Task**:
 
 Implement java methods that throws next Exceptions:
 
