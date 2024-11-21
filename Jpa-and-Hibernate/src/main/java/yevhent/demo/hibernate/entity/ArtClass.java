@@ -1,10 +1,7 @@
 package yevhent.demo.hibernate.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(schema = "art_school", name = "art_classes")
@@ -12,6 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
+@ToString(onlyExplicitlyIncluded = true)
 public class ArtClass {
 
     public ArtClass(int id, String name, String weekDay) {
@@ -23,12 +21,15 @@ public class ArtClass {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "class_id")
+    @ToString.Include
     private int id;
 
     @Column(name = "class_name")
+    @ToString.Include
     private String name;
 
     @Column(name = "week_day")
+    @ToString.Include
     private String weekDay;
 
     @OneToOne
