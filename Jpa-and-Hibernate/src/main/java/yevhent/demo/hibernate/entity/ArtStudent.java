@@ -1,10 +1,7 @@
 package yevhent.demo.hibernate.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -14,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @Setter
 @Getter
+@ToString(onlyExplicitlyIncluded = true)
 public class ArtStudent {
 
     public ArtStudent(int id, String name) {
@@ -24,9 +22,11 @@ public class ArtStudent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "student_id")
+    @ToString.Include
     private int id;
 
     @Column(name = "student_name")
+    @ToString.Include
     private String name;
 
     @ManyToMany(cascade = CascadeType.ALL)
