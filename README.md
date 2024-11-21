@@ -533,12 +533,10 @@ Full list of relations is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hi
 Using JPQL queries implement Java methods to select next data:
 
 - All the students
-- Students who are attending classes on Monday
-- Average rating for the teacher named “White”
-- Average ratings for teachers (Hint: use the GROUP BY clause)
-- Average ratings for teachers arranged in the descending order of average rating (Hint: use the ORDER BY clause)
-- Average ratings for teachers having an average rating greater than 3, arranged in the descending order of average
-  rating (Hint: use the HAVING clause)
+- Classes which John attends
+- Average rating for the teacher named “John”
+- Average rating for each teacher
+- Average rating for each teacher having it greater than 40, arranged in the descending order
 
 **Solution example**:
 
@@ -570,7 +568,7 @@ public class JpqlQueryDemo {
     }
 }
 ```
-Full list of JPQL queries is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/jpql).
+Full list of JPQL queries is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/jpql/JpqlQueryDemo.java).
 
 #### Challenge: Repository Pattern
 
