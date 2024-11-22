@@ -1,10 +1,7 @@
 package yevhent.demo.hibernate.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -14,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor // Optional: used by this app
 @Setter // Optional: used by this app
 @Getter // Optional: used by this app
+@EqualsAndHashCode
 public class ArtTeacher {
 
     public ArtTeacher(int id, String name) {

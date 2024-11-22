@@ -1,10 +1,7 @@
 package yevhent.demo.hibernate.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(schema = "art_school", name = "art_reviews")
@@ -12,6 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode(exclude = "artTeacher")
 public class ArtReview {
 
     @Id
