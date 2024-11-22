@@ -26,7 +26,7 @@ Implemented based on LinkedIn learning course:
   * [Challenge: Persistent Context operations](#challenge-persistent-context-operations)
   * [Challenge: Entity Relations](#challenge-entity-relations)
   * [Challenge: JPQL queries](#challenge-jpql-queries)
-  * [Challenge: Repository Pattern](#challenge-repository-pattern)
+  * [Challenge: Service VS Repository](#challenge-service-and-repository)
   * [Challenge: Hibernate Exceptions](#challenge-hibernate-exceptions)
 
 ### Project setup
@@ -570,11 +570,21 @@ public class JpqlQueryDemo {
 ```
 Full list of JPQL queries is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/jpql/JpqlQueryDemo.java).
 
-#### Challenge: Repository Pattern
+#### Challenge: Service and Repository
+
+Now we will check How data access and transaction management 
+are implemented according to layered architecture best practices.
 
 **Task**:
 
-Create Java class that implements Repository Pattern by having CRUD operation methods.
+Implement layered architecture for data access and processing:
+
+- Create `ArtCrudRepository` interface for CRUD methods declaration
+- Extend `ArtCrudRepository` interface by `ArtStudentRepository` interface having more complex operations.
+- Implement `ArtStudentRepository` interface as `ArtStudentRepositoryImpl` class using given `EntityManager`.
+- Create `ArtStudentService` interface and corresponding implementation to use `ArtStudentRepository` 
+  and managing transactions.
+- Create demo class for using Service and underlying Repository.
 
 **Solution example**:
 
