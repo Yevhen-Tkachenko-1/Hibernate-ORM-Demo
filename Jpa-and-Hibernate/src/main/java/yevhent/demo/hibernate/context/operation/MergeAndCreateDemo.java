@@ -1,4 +1,4 @@
-package yevhent.demo.hibernate.operation;
+package yevhent.demo.hibernate.context.operation;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;

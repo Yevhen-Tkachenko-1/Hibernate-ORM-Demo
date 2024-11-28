@@ -16,17 +16,18 @@ Implemented based on LinkedIn learning course:
 **Content**:
 * [Project setup](#project-setup)
   * [Prepare PostgreSQL](#prepare-postgresql)
-  * [Gradle dependencies](#gradle-dependencies)
+  * [Configure project with Gradle](#configure-project-with-gradle)
   * [Persistence Unit: XML configuration](#persistence-unit-xml-configuration-)
   * [Persistence Unit: Java configuration](#persistence-unit-java-configuration)
-* [Hibernate practice](#hibernate-practice)
-  * [Challenge: "Art School" schema in PostgreSQL](#challenge-art-school-schema-in-postgresql)
-  * [Challenge: "Art School" entities in Java](#challenge-art-school-entities-in-java)
-  * [Challenge: CRUD operations](#challenge-crud-operations)
-  * [Challenge: Persistent Context operations](#challenge-persistent-context-operations)
-  * [Challenge: Entity Relations](#challenge-entity-relations)
-  * [Challenge: JPQL queries](#challenge-jpql-queries)
-  * [Challenge: Service VS Repository](#challenge-service-and-repository)
+* [Hibernate Practice](#hibernate-practice)
+  * [Challenge: Define Schema in PostgreSQL](#challenge-define-schema-in-postgresql)
+  * [Challenge: Define Entities in Java](#challenge-define-entities-in-java)
+  * [Challenge: CRUD Operations in Persistent Context](#challenge-crud-operations-in-persistent-context)
+  * [Challenge: Entity Synchronization in Persistent Context](#challenge-crud-operations-in-persistent-context)
+  * [Challenge: Entity Relations in Persistent Context](#challenge-entity-relations-in-persistent-context)
+  * [Challenge: CRUD Operations with Queries](#challenge-crud-operations-with-queries)
+  * [Challenge: Service vs Repository](#challenge-service-vs-repository)
+  * [Challenge: JPA Exceptions](#challenge-jpa-exceptions)
   * [Challenge: Hibernate Exceptions](#challenge-hibernate-exceptions)
 
 ### Project setup
@@ -41,7 +42,7 @@ Implemented based on LinkedIn learning course:
   in order to allow java app connect to `hibernate` database
   and not to store credentials in repository
 
-#### Gradle dependencies
+#### Configure project with Gradle
 
 Having stand-alone Java application (running without web server) we will use next libs:
 
@@ -173,7 +174,7 @@ EntityManagerFactory entityManagerFactory = new HibernatePersistenceProvider()
 
 Now, we are ready to create DB tables and implement JPA layer in java.
 
-#### Challenge: "Art School" schema in PostgreSQL
+#### Challenge: Define Schema in PostgreSQL
 
 **Task**:
 
@@ -262,7 +263,7 @@ Data structure looks like this in pgAdmin:
 
 ![](image/1.PNG)
 
-#### Challenge: "Art School" entities in Java
+#### Challenge: Define Entities in Java
 
 **Task**:
 
@@ -303,7 +304,7 @@ public class ArtTeacher {
 
 Full list of Entities is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/entity).
 
-#### Challenge: CRUD operations
+#### Challenge: CRUD Operations in Persistent Context
 
 **Task**:
 
@@ -354,7 +355,7 @@ The Student is saved to DB:
 
 Full list of operations is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/operation).
 
-#### Challenge: Persistent Context operations
+#### Challenge: Entity Synchronization in Persistent Context
 
 **Task**:
 
@@ -395,7 +396,7 @@ public class MergeAndUpdateDemo {
 
 Full list of operations is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/context).
 
-#### Challenge: Entity Relations
+#### Challenge: Entity Relations in Persistent Context
 
 **Given**:
 
@@ -527,16 +528,18 @@ public class SelectOneToOneDemo {
 
 Full list of relations is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/relation).
 
-#### Challenge: JPQL queries
+#### Challenge: CRUD Operations with Queries
 
 **Task**:
-Using JPQL queries implement Java methods to select next data:
+Implement Java methods for following operations using `JPQL`, `Named`, `Native` and `Criteria` queries:
 
-- All the students
-- Classes which John attends
-- Average rating for the teacher named “John”
-- Average rating for each teacher
-- Average rating for each teacher having it greater than 40, arranged in the descending order
+- Find all the Students
+- Find classes which Student `John` attends
+- Get average rating of Reviews for Teacher `John` 
+- Get average rating of Reviews for each Teacher
+- Get average rating of Reviews for each Teacher, return greater than 40 ones, arrange in the descending order
+- Round rating to the nearest tenth of Reviews for each Teacher
+- Delete Reviews of Teacher `John` with rating lower than 40
 
 **Solution example**:
 
@@ -568,9 +571,9 @@ public class JpqlQueryDemo {
     }
 }
 ```
-Full list of JPQL queries is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/jpql/JpqlQueryDemo.java).
+Full list of JPQL queries is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/query/JpqlQueryDemo.java).
 
-#### Challenge: Service and Repository
+#### Challenge: Service vs Repository
 
 Now we will check How data access and transaction management 
 are implemented according to layered architecture best practices.
@@ -592,7 +595,7 @@ Implement layered architecture for data access and processing:
 
 ```
 
-#### Challenge: Hibernate Exceptions
+#### Challenge: JPA Exceptions
 
 **Task**:
 
@@ -607,6 +610,13 @@ Implement java methods that throws next Exceptions:
 - `javax.persistence.NoResultException`
 - `javax.persistence.NonUniqueResultException`
 - `javax.persistence.QueryTimeoutException`
+
+#### Challenge: Hibernate Exceptions
+
+**Task**:
+
+Implement java methods that throws next Exceptions:
+
 - `org.hibernate.HibernateException`
 - `org.hibernate.TransactionException`
 - `org.hibernate.QueryException`
