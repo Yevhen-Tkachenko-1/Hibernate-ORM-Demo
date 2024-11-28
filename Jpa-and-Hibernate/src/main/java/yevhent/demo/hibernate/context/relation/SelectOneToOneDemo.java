@@ -1,4 +1,4 @@
-package yevhent.demo.hibernate.relation;
+package yevhent.demo.hibernate.context.relation;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
