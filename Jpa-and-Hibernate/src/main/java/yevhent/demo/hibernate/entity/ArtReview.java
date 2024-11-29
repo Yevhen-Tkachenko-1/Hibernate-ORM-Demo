@@ -10,17 +10,21 @@ import lombok.*;
 @Getter
 @Setter
 @EqualsAndHashCode(exclude = "artTeacher")
+@ToString(onlyExplicitlyIncluded = true)
 public class ArtReview {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_id")
+    @ToString.Include
     private int id;
 
     @Column(name = "review_comment")
+    @ToString.Include
     private String comment;
 
     @Column(name = "rating")
+    @ToString.Include
     private int rating;
 
     @ManyToOne
