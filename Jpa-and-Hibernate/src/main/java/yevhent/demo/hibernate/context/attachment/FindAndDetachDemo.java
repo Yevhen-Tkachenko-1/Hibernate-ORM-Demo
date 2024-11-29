@@ -1,11 +1,11 @@
-package yevhent.demo.hibernate.context.synchronization;
+package yevhent.demo.hibernate.context.attachment;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import yevhent.demo.hibernate.configuration.ArtSchoolFactory;
 import yevhent.demo.hibernate.entity.ArtStudent;
 
-public class FindAndRefreshDemo {
+public class FindAndDetachDemo {
     public static void main(String[] args) {
 
         try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
@@ -13,11 +13,11 @@ public class FindAndRefreshDemo {
             entityManager.getTransaction().begin();
 
             // ArtStudent with ID = 1 must be persisted in DB before running FindAndDetachDemo
-            ArtStudent artStudent = entityManager.find(ArtStudent.class, 5); // SELECT query to DB
+            ArtStudent artStudent = entityManager.find(ArtStudent.class, 1); // SELECT query to DB
             // ArtStudent Entity is in Context
-            artStudent.setName("Not Updated John"); // new Name is in context
-            entityManager.refresh(artStudent); // SELECT query to DB
-            // Name is rolled back to DB Name
+            entityManager.detach(artStudent);
+            // ArtStudent Entity is out of Context
+            artStudent.setName("Not Updated John"); // Name "Not Updated John" is not tracked
             entityManager.getTransaction().commit(); // NO query to DB
             // Name "Not Updated John" is not saved
         }

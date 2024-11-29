@@ -1,11 +1,11 @@
-package yevhent.demo.hibernate.context.synchronization;
+package yevhent.demo.hibernate.context.attachment;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import yevhent.demo.hibernate.configuration.ArtSchoolFactory;
 import yevhent.demo.hibernate.entity.ArtStudent;
 
-public class MergeAndUpdateDemo {
+public class AttachAndUpdateDemo {
     public static void main(String[] args) {
 
         try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
