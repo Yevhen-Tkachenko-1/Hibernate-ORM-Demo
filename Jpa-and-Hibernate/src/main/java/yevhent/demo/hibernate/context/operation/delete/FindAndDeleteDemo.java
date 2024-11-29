@@ -1,23 +1,26 @@
-package yevhent.demo.hibernate.context.operation;
+package yevhent.demo.hibernate.context.operation.delete;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import yevhent.demo.hibernate.configuration.ArtSchoolFactory;
 import yevhent.demo.hibernate.entity.ArtStudent;
 
-public class FindDemo {
+public class FindAndDeleteDemo {
     public static void main(String[] args) {
 
         try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
              EntityManager entityManager = entityManagerFactory.createEntityManager()) {
-            // We don't need to entityManager.getTransaction().begin(); as operations are read only
-            // ArtStudent with ID = 1 must be persisted in DB before running FindAndUpdateDemo
+            entityManager.getTransaction().begin();
+
+            // ArtStudent with ID = 1 must be persisted in DB before running FindAndDeleteDemo
             ArtStudent artStudent = entityManager.find(ArtStudent.class, 1);
-            // JPA automatically performs something like entityManager.getTransaction().begin();
             // Hibernate: select as1_0.student_id,as1_0.student_name from art_school.art_students as1_0 where as1_0.student_id=?
             // call to DB
-            System.out.println("Student found: " + artStudent.getName());
-            // We don't need to entityManager.getTransaction().commit();
+            entityManager.remove(artStudent);
+            // Hibernate keeps changes in persistent context by moving it to "removed" state
+            entityManager.getTransaction().commit();
+            // Hibernate: delete from art_school.art_students where student_id=?
+            // call to DB
         }
     }
 }
