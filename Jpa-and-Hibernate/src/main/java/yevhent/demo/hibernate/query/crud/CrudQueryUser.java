@@ -1,7 +1,8 @@
-package yevhent.demo.hibernate.query;
+package yevhent.demo.hibernate.query.crud;
 
 import yevhent.demo.hibernate.entity.ArtReview;
 import yevhent.demo.hibernate.entity.ArtTeacher;
+import yevhent.demo.hibernate.query.crud.CrudQuery;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,17 +24,19 @@ public class CrudQueryUser {
         return teachersReviews;
     }
 
-    public static void read(CrudQuery crudQuery) {
-        crudQuery.findAverageReviewsRatings(40);
-        crudQuery.findTeachersWithReviewNumber(5);
+    public static void read(CrudQuery crudQuery, Map<ArtTeacher, List<ArtReview>> entities) {
+        crudQuery.findTeachersWithReviewNumberMore(
+                entities.keySet().stream().mapToInt(ArtTeacher::getId).min().orElse(0),
+                entities.keySet().stream().mapToInt(ArtTeacher::getId).max().orElse(0),
+                5);
     }
 
     public static void update(CrudQuery crudQuery, Map<ArtTeacher, List<ArtReview>> entities) {
         crudQuery.roundReviewRatings(entities.keySet().iterator().next().getId());
     }
 
-    public static void delete(CrudQuery crudQuery, Map<ArtTeacher, List<ArtReview>> entities){
-        crudQuery.deleteReviewsLower(entities.keySet().iterator().next().getId(), 30);
+    public static void delete(CrudQuery crudQuery, Map<ArtTeacher, List<ArtReview>> entities) {
+        crudQuery.deleteReviewsWithRatingLower(entities.keySet().iterator().next().getId(), 30);
     }
 
     private static List<Integer> getRandomRatings() {

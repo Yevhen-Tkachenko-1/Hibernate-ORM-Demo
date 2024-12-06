@@ -1,4 +1,4 @@
-package yevhent.demo.hibernate.query;
+package yevhent.demo.hibernate.query.crud;
 
 import yevhent.demo.hibernate.entity.ArtReview;
 import yevhent.demo.hibernate.entity.ArtTeacher;
@@ -12,26 +12,25 @@ public interface CrudQuery {
      * CREATE
      */
     ArtTeacher createTeacher(String name);
+
     /**
      * CREATE
      */
     List<ArtReview> createReviews(int teacherId, List<Integer> ratings);
+
     /**
      * READ
      */
-    Map<String, Long> findTeachersWithReviewNumber(int minNumberOfReviews);
-    /**
-     * READ
-     */
-    Map<String, Double> findAverageReviewsRatings(int minAverageRating);
+    Map<String, Long> findTeachersWithReviewNumberMore(int teacherIdFrom, int teacherIdTo, int minNumberOfReviews);
 
     /**
      * UPDATE
      */
-    Map<String, List<Integer>> roundReviewRatings(int teacherId);
+    Map<String, Integer> roundReviewRatings(int teacherId);
+
     /**
      * DELETE
      */
-    int deleteReviewsLower(int teacherId, int rating);
+    Map<String, Integer> deleteReviewsWithRatingLower(int teacherId, int rating);
 
 }
