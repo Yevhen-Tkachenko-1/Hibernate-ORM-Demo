@@ -18,12 +18,12 @@ public class NativeQueryDemo implements CrudQuery {
 
     public static void main(String[] args) {
 
-        CrudQuery crudQuery = new NativeQueryDemo();
+        CrudQuery demoQuery = new NativeQueryDemo();
 
-        Map<ArtTeacher, List<ArtReview>> entities = CrudQueryUser.create(crudQuery);
-        CrudQueryUser.read(crudQuery, entities);
-        CrudQueryUser.update(crudQuery, entities);
-        CrudQueryUser.delete(crudQuery, entities);
+        Map<ArtTeacher, List<ArtReview>> entities = CrudQueryUser.create(demoQuery);
+        CrudQueryUser.read(demoQuery, entities);
+        CrudQueryUser.update(demoQuery, entities);
+        CrudQueryUser.delete(demoQuery, entities);
     }
 
     @Override
