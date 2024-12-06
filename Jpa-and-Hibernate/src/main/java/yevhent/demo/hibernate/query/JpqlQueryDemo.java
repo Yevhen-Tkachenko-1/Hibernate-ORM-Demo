@@ -1,41 +1,110 @@
 package yevhent.demo.hibernate.query;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaDelete;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.*;
 import yevhent.demo.hibernate.configuration.ArtSchoolFactory;
 import yevhent.demo.hibernate.entity.ArtClass;
 import yevhent.demo.hibernate.entity.ArtReview;
-import yevhent.demo.hibernate.entity.ArtStudent;
+import yevhent.demo.hibernate.entity.ArtTeacher;
+import yevhent.demo.hibernate.query.crud.CrudQuery;
+import yevhent.demo.hibernate.query.crud.CrudQueryUser;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-public class JpqlQueryDemo {
+public class JpqlQueryDemo implements CrudQuery {
 
     public static void main(String[] args) {
 
-        findAllStudents();
-        findStudentClasses();
-        findTeacherAverageReviewRating();
-        findTeachersAverageReviewRatings();
-        findTeachersAverageReviewRatingsGreaterThan40();
+        CrudQuery demoQuery = new JpqlQueryDemo();
+        Map<ArtTeacher, List<ArtReview>> entities;
+        try {
+            entities = CrudQueryUser.create(demoQuery);
+        } catch (UnsupportedOperationException e) {
+            e.printStackTrace();
+            entities = CrudQueryUser.create(new NativeQueryDemo());
+        }
+        CrudQueryUser.read(demoQuery, entities);
+        CrudQueryUser.update(demoQuery, entities);
+        CrudQueryUser.delete(demoQuery, entities);
     }
 
-    public static void findAllStudents() {
+    @Override
+    public ArtTeacher createTeacher(String name) {
+        throw new UnsupportedOperationException("Insert operations are not designed in jakarta.persistence JPQL");
+    }
+
+    @Override
+    public List<ArtReview> createReviews(int teacherId, List<Integer> ratings) {
+        throw new UnsupportedOperationException("Insert operations are not designed in jakarta.persistence JPQL");
+    }
+
+    @Override
+    public Map<String, Long> findTeachersWithReviewNumberMore(int teacherIdFrom, int teacherIdTo, int minNumberOfReviews) {
         try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
              EntityManager entityManager = entityManagerFactory.createEntityManager()) {
 
-            String s1 = "SELECT s FROM ArtStudent s";
-            TypedQuery<ArtStudent> q1 = entityManager.createQuery(s1, ArtStudent.class);
-            List<ArtStudent> artStudents = q1.getResultList();
-            // Hibernate: select as1_0.student_id,as1_0.student_name from art_school.art_students as1_0
-            // Select query to DB
-            System.out.println("All Students: " + artStudents);
-            // All Students: [ArtStudent(id=1, name=John), ArtStudent(id=2, name=Alice), ArtStudent(id=3, name=Bob), ArtStudent(id=4, name=Charlie), ArtStudent(id=5, name=Diana), ArtStudent(id=6, name=Eve), ArtStudent(id=7, name=Frank)]
+            String jpql = """
+                    SELECT r.artTeacher.id AS id, r.artTeacher.name AS name, COUNT(r) AS number
+                    FROM ArtReview r
+                    WHERE r.artTeacher.id BETWEEN :teacherIdFrom AND :teacherIdTo
+                    GROUP BY r.artTeacher.id, r.artTeacher.name
+                    HAVING COUNT(r) > :minNumber
+                    """;
+            TypedQuery<Tuple> query = entityManager.createQuery(jpql, Tuple.class);
+            query.setParameter("teacherIdFrom", teacherIdFrom);
+            query.setParameter("teacherIdTo", teacherIdTo);
+            query.setParameter("minNumber", minNumberOfReviews);
+            List<Tuple> rows = query.getResultList();
+            Map<String, Long> teacherReviewNumbers = rows.stream()
+                    .peek(row -> System.out.printf("Found Teacher(%d, \"%s\") with %s reviews.\n",
+                            row.get("id", Integer.class), row.get("name", String.class), row.get("number", Long.class)))
+                    .collect(Collectors.toMap(
+                            row -> String.format("Teacher(%d, \"%s\")", row.get("id", Integer.class), row.get("name", String.class)),
+                            row -> row.get("number", Long.class)));
+            return teacherReviewNumbers;
         }
+    }
+
+    @Override
+    public Map<String, Integer> roundReviewRatings(int teacherId) {
+
+//        try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
+//             EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+//            String jpqlUpdate = """
+//                UPDATE ArtReview r
+//                SET r.rating = ROUND(r.rating / 10) * 10
+//                WHERE r.artTeacher.id = :teacherId
+//                """;
+//            TypedQuery<Tuple> query = entityManager.createQuery(jpqlUpdate, Tuple.class);
+//            query.setParameter("teacherId", teacherId);
+//            List<Tuple> rows = query.getResultList();
+//            Map<String, Integer> reviews = rows.stream()
+//                    .peek(row -> System.out.printf("Updated Rating in Review(%d, \"%s\") to %d.\n",
+//                            row.get("id", Integer.class), row.get("comment", String.class), row.get("new_rating", Integer.class)))
+//                    .collect(Collectors.toMap(
+//                            row -> String.format("Review(%d, \"%s\")", row.get("id", Integer.class), row.get("comment", String.class)),
+//                            row -> row.get("new_rating", Integer.class)));
+//            return reviews;
+//        }
+//
+//        Query updateQuery = entityManager.createQuery(jpqlUpdate);
+//        updateQuery.setParameter("teacherId", teacherId);
+//        int updatedCount = updateQuery.executeUpdate();
+//        System.out.println("Number of reviews updated: " + updatedCount);
+//
+//        // Step 2: Retrieve the updated reviews and their details
+//        String jpqlSelect = """
+//                SELECT r.id AS id, r.reviewComment AS comment, r.rating AS new_rating
+//                FROM ArtReview r
+//                WHERE r.artTeacher.id = :teacherId
+//        """;
+       return null;
+    }
+
+    @Override
+    public Map<String, Integer> deleteReviewsWithRatingLower(int teacherId, int rating) {
+        return null;
     }
 
     public static void findStudentClasses() {
