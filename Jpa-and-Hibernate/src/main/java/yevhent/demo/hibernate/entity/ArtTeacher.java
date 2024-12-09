@@ -13,6 +13,15 @@ import java.util.List;
 @Getter // Optional: used by this app
 @EqualsAndHashCode
 @ToString
+@NamedQuery(
+        name = "ArtTeacher.findTeachersWithReviewNumberMore",
+        query = """      
+                SELECT r.artTeacher.id AS id, r.artTeacher.name AS name, COUNT(r) AS number
+                FROM ArtReview r
+                WHERE r.artTeacher.id BETWEEN :teacherIdFrom AND :teacherIdTo
+                GROUP BY r.artTeacher.id, r.artTeacher.name
+                HAVING COUNT(r) > :minNumber
+                """)
 public class ArtTeacher {
 
     public ArtTeacher(int id, String name) {

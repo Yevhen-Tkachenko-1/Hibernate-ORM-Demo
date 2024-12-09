@@ -11,6 +11,19 @@ import lombok.*;
 @Setter
 @EqualsAndHashCode
 @ToString
+@NamedQuery(
+        name = "ArtReview.roundReviewRatings",
+        query = """
+                UPDATE ArtReview r
+                SET r.rating = ROUND(r.rating / 10) * 10
+                WHERE r.artTeacher.id = :teacherId
+                """)
+@NamedQuery(
+        name = "ArtReview.deleteReviewsWithRatingLower",
+        query = """
+                DELETE FROM ArtReview r
+                WHERE r.artTeacher.id = :teacherId AND r.rating < :minRating
+                """)
 public class ArtReview {
 
     @Id
