@@ -1,7 +1,6 @@
 package yevhent.demo.hibernate.repository;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
 import yevhent.demo.hibernate.entity.ArtTeacher;
 
 import java.util.List;

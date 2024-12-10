@@ -11,6 +11,7 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ArtSchoolDemo {
 
@@ -21,7 +22,7 @@ public class ArtSchoolDemo {
 
         ArtSchoolService service = new ArtSchoolService(teacherRepository, entityManagerFactory);
 
-        Map<String, List<Integer>> teacherRequest = List.of("Mr. Smith", "Ms. Johnson", "Dr. Miller", "Prof. Davis", "Mrs. Williams").stream()
+        Map<String, List<Integer>> teacherRequest = Stream.of("Mr. Smith", "Ms. Johnson", "Dr. Miller", "Prof. Davis", "Mrs. Williams")
                 .collect(Collectors.toMap(Function.identity(), name-> getRandomRatings()));
 
         List<Integer> persistedTeacherIds = service.saveTeachersWithReviews(teacherRequest);
