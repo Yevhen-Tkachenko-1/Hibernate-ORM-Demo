@@ -1,13 +1,14 @@
 package yevhent.demo.hibernate.repository;
 
 import jakarta.persistence.EntityManager;
+import yevhent.demo.hibernate.entity.Identifiable;
 
 import java.util.Optional;
 
 /**
- * Data access layer for CRUD operations over Art Entities
+ * Data access layer for CRUD operations over Entities
  */
-public interface ArtCrudRepository<T> {
+public interface CrudRepository<T extends Identifiable> {
 
     /**
      * Creates and saves new Entity to DB.
