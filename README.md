@@ -502,8 +502,8 @@ Using `JPQL`, `Named`, `Native` and `Criteria` queries, implement Java methods f
 - Create 5 Teachers: `Mr. Smith`, `Ms. Johnson`, `Dr. Miller`, `Prof. Davis`, `Mrs. Williams`
 - Create from 3 to 10 Reviews done by each Teacher
 - Find Teachers which have Reviews more than given number
-- Find average rating of Reviews for each Teacher, return greater than given average value, arrange in the descending
-  order
+- Find average rating of Reviews for each Teacher, 
+  return greater than given average value, arrange in the descending order
 - Round rating to the nearest tenth of Reviews for given Teacher
 - Delete Reviews of given Teacher with rating lower than given value
 
@@ -512,33 +512,53 @@ Using `JPQL`, `Named`, `Native` and `Criteria` queries, implement Java methods f
 ```java
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Tuple;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.Query;
 import yevhent.demo.hibernate.configuration.ArtSchoolFactory;
-import yevhent.demo.hibernate.entity.ArtStudent;
+import yevhent.demo.hibernate.entity.ArtReview;
+import yevhent.demo.hibernate.entity.ArtTeacher;
+import yevhent.demo.hibernate.query.crud.CrudQuery;
+import yevhent.demo.hibernate.query.crud.CrudQueryUser;
 
-import java.util.List;
+public class JpqlQueryDemo implements CrudQuery {
 
-public class JpqlQueryDemo {
-
-    public static void main(String[] args) {
-        System.out.println("All ArtStudents: " + findAllStudents());
-        // All ArtStudents: [ArtStudent(id=1, name=John), ArtStudent(id=2, name=Alice), ArtStudent(id=3, name=Bob), ArtStudent(id=4, name=Charlie), ArtStudent(id=5, name=Diana), ArtStudent(id=6, name=Eve), ArtStudent(id=7, name=Frank)]
-    }
-    public static List<ArtStudent> findAllStudents() {
+    @Override
+    public Map<String, Long> findTeachersWithReviewNumberMore(int teacherIdFrom, int teacherIdTo, int minNumberOfReviews) {
         try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
              EntityManager entityManager = entityManagerFactory.createEntityManager()) {
-            String s1 = "SELECT s FROM ArtStudent s";
-            TypedQuery<ArtStudent> q1 = entityManager.createQuery(s1, ArtStudent.class);
-            List<ArtStudent> artStudents = q1.getResultList();
-            // Hibernate: select as1_0.student_id,as1_0.student_name from art_school.art_students as1_0
-            // Select query to DB
-            return artStudents;
+
+            String jpql = """
+                    SELECT r.artTeacher.id AS id, r.artTeacher.name AS name, COUNT(r) AS number
+                    FROM ArtReview r
+                    WHERE r.artTeacher.id BETWEEN :teacherIdFrom AND :teacherIdTo
+                    GROUP BY r.artTeacher.id, r.artTeacher.name
+                    HAVING COUNT(r) > :minNumber
+                    """;
+            TypedQuery<Tuple> query = entityManager.createQuery(jpql, Tuple.class);
+            query.setParameter("teacherIdFrom", teacherIdFrom);
+            query.setParameter("teacherIdTo", teacherIdTo);
+            query.setParameter("minNumber", minNumberOfReviews);
+            List<Tuple> rows = query.getResultList();
+            // Hibernate: select ar1_0.teacher_id,at1_0.teacher_name,count(ar1_0.review_id)
+            //            from art_school.art_reviews ar1_0
+            //            join art_school.art_teachers at1_0 on at1_0.teacher_id=ar1_0.teacher_id
+            //            where ar1_0.teacher_id between ? and ?
+            //            group by ar1_0.teacher_id,at1_0.teacher_name
+            //            having count(ar1_0.review_id)>?
+            Map<String, Long> teacherReviewNumbers = rows.stream()
+                    .peek(row -> System.out.printf("Found Teacher(%d, \"%s\") with %s reviews.\n",
+                            row.get("id", Integer.class), row.get("name", String.class), row.get("number", Long.class)))
+                    .collect(Collectors.toMap(
+                            row -> String.format("Teacher(%d, \"%s\")", row.get("id", Integer.class), row.get("name", String.class)),
+                            row -> row.get("number", Long.class)));
+            return teacherReviewNumbers;
         }
     }
 }
 ```
 
-Full list of queries is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/query).
+Complete demos are [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/query).
 
 #### Challenge: Service vs Repository
 
@@ -549,18 +569,70 @@ are implemented according to layered architecture best practices.
 
 Implement layered architecture for data access and processing:
 
-- Create `ArtCrudRepository` interface for CRUD methods declaration
-- Extend `ArtCrudRepository` interface by `ArtStudentRepository` interface having more complex operations.
-- Implement `ArtStudentRepository` interface as `ArtStudentRepositoryImpl` class using given `EntityManager`.
-- Create `ArtStudentService` interface and corresponding implementation to use `ArtStudentRepository`
-  and managing transactions.
+- Declare `CrudRepository` interface for CRUD methods declaration
+- Implement `CrudRepository` interface by `BaseCrudRepository` class.
+- Extend `CrudRepository` interface by `ArtTeacherRepository` interface with more specific find operation.
+- Implement `ArtTeacherRepository` interface by `ArtTeacherRepositoryImpl` class extending `BaseCrudRepository` class.
+- Create `ArtTeacherService` class to use `ArtTeacherRepositoryImpl` class. 
+- Make sure data access happens at Repository layer
+- Make sure transactions are managed at Service layer
 - Create demo class for using Service and underlying Repository.
 
 **Solution example**:
 
 ```java
+import jakarta.persistence.EntityManager;
+import yevhent.demo.hibernate.entity.ArtTeacher;
 
+public class ArtTeacherRepositoryImpl extends BaseCrudRepository<ArtTeacher> implements ArtTeacherRepository {
+
+    @Override
+    public List<ArtTeacher> findEagerTeachersByIds(EntityManager entityManager, List<Integer> teacherIds) {
+        return entityManager.createQuery("""
+                                SELECT t FROM ArtTeacher t
+                                LEFT JOIN FETCH t.artReviews
+                                WHERE t.id IN :teacherIds
+                                """, ArtTeacher.class)
+                .setParameter("teacherIds", teacherIds)
+                .getResultList();
+    }
+}
 ```
+
+```java
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import yevhent.demo.hibernate.entity.ArtReview;
+import yevhent.demo.hibernate.entity.ArtTeacher;
+
+@RequiredArgsConstructor
+public class ArtSchoolService {
+
+    private final ArtTeacherRepository teacherRepository;
+    private final EntityManagerFactory entityManagerFactory;
+
+    public List<Integer> saveTeachersWithReviews(Map<String, List<Integer>> teacherRequest) {
+        try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+            entityManager.getTransaction().begin();
+
+            List<ArtTeacher> persistedTeachers = teacherRequest.keySet().stream()
+                    .map(name -> teacherRepository.create(entityManager, new ArtTeacher(name))).toList();
+            entityManager.flush();
+
+            persistedTeachers.forEach(teacher -> {
+                List<Integer> ratings = teacherRequest.get(teacher.getName());
+                List<ArtReview> reviews = ratings.stream()
+                        .map(rating -> new ArtReview(getComment(teacher, rating), rating, teacher)).toList();
+                teacher.setArtReviews(reviews);
+            });
+            entityManager.getTransaction().commit();
+            return persistedTeachers.stream().map(ArtTeacher::getId).toList();
+        }
+    }
+}
+```
+
+Complete implementation is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/repository).
 
 #### Challenge: JPA Exceptions
 
