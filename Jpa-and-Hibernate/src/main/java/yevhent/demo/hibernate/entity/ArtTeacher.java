@@ -22,10 +22,14 @@ import java.util.List;
                 GROUP BY r.artTeacher.id, r.artTeacher.name
                 HAVING COUNT(r) > :minNumber
                 """)
-public class ArtTeacher {
+public class ArtTeacher implements Identifiable {
 
-    public ArtTeacher(int id, String name) {
+    public ArtTeacher(Integer id, String name) {
         this.id = id;
+        this.name = name;
+    }
+
+    public ArtTeacher(String name) {
         this.name = name;
     }
 

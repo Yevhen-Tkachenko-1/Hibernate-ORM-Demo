@@ -24,7 +24,7 @@ import lombok.*;
                 DELETE FROM ArtReview r
                 WHERE r.artTeacher.id = :teacherId AND r.rating < :minRating
                 """)
-public class ArtReview {
+public class ArtReview implements Identifiable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +36,12 @@ public class ArtReview {
 
     @Column(name = "rating")
     private int rating;
+
+    public ArtReview(String comment, int rating, ArtTeacher artTeacher) {
+        this.comment = comment;
+        this.rating = rating;
+        this.artTeacher = artTeacher;
+    }
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
