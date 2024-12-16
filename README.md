@@ -188,7 +188,7 @@ Now, we are ready to create DB tables and implement JPA layer in java.
 - Create table `review` with fields `id`, `comment`, `rating`,
   and `teacher_id` as reference to `teacher` table.
 
-**Solution**:
+**Solution example**:
 
 ```sql
 CREATE SCHEMA IF NOT EXISTS art_school
@@ -204,61 +204,9 @@ CREATE TABLE IF NOT EXISTS art_school.art_teachers(
 );
 ```
 
-```sql
-CREATE TABLE IF NOT EXISTS art_school.art_students(
-    student_id   serial,
-    student_name varchar(255),
-    
-    PRIMARY KEY (student_id)
-);
-```
-
-```sql
-CREATE TABLE IF NOT EXISTS art_school.art_classes(
-    class_id    serial,
-    class_name  varchar(255),
-    week_day    varchar(255),
-    teacher_id  int,
-
-    PRIMARY KEY (class_id),
-    FOREIGN KEY (teacher_id) REFERENCES art_school.art_teachers(teacher_id) 
-        MATCH SIMPLE 
-        ON UPDATE RESTRICT
-        ON DELETE RESTRICT
-);
-```
-
-```sql
-CREATE TABLE IF NOT EXISTS art_school.students_classes_mapping(
-    student_id int,
-    class_id   int,
-    
-    PRIMARY KEY (student_id, class_id),
-    FOREIGN KEY (student_id) REFERENCES art_school.art_students(student_id) 
-        MATCH SIMPLE 
-        ON UPDATE RESTRICT
-        ON DELETE RESTRICT,
-    FOREIGN KEY (class_id)   REFERENCES art_school.art_classes(class_id)
-        MATCH SIMPLE 
-        ON UPDATE RESTRICT
-        ON DELETE RESTRICT
-);
-```
-
-```sql
-CREATE TABLE IF NOT EXISTS art_school.art_reviews(
-    review_id      serial,
-    review_comment varchar(255),
-    rating         int,
-    teacher_id     int,
-    
-    PRIMARY KEY (review_id),
-    FOREIGN KEY (teacher_id) REFERENCES art_school.art_teachers(teacher_id)
-        MATCH SIMPLE
-        ON UPDATE RESTRICT
-        ON DELETE RESTRICT
-);
-``` 
+Full list of commands is 
+[here .MD](sql/art_school_schema) or
+[here .sql](sql/art_school_schema.sql) 
 
 Data structure looks like this in pgAdmin:
 
@@ -354,7 +302,7 @@ The Student is saved to DB:
 
 ![](image/2.PNG)
 
-Full list of operations is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/context/operation).
+Full list of operations is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/context/crud).
 
 #### Challenge: Entity Attachment in Persistent Context
 
