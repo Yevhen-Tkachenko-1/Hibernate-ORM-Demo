@@ -32,7 +32,7 @@ public class ExceptionRepository {
              EntityManager entityManager = entityManagerFactory.createEntityManager()) {
             entityManager.getTransaction().begin();
             ArtTeacher artTeacher = entityManager.find(ArtTeacher.class, teacherId);
-            artTeacher.getArtReviews().forEach(review -> entityManager.remove(review));
+            artTeacher.getArtReviews().forEach(entityManager::remove);
             artTeacher.getArtReviews().clear();
             entityManager.remove(artTeacher);
             entityManager.getTransaction().commit();
