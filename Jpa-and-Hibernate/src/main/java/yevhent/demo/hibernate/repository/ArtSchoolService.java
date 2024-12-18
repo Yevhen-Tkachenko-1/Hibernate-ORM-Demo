@@ -64,7 +64,6 @@ public class ArtSchoolService {
         teacher.getArtReviews().forEach(review -> review.setRating(Math.round(((float) review.getRating()) / 10) * 10));
     }
 
-
     private static String getComment(ArtTeacher teacher, int rating) {
         return String.format("Commented by Teacher(%d, %s) and rated as %d.", teacher.getId(), teacher.getName(), rating);
     }
