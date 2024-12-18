@@ -11,7 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 @Setter
 @Getter
-@ToString(onlyExplicitlyIncluded = true)
+@ToString
+@EqualsAndHashCode
 public class ArtStudent {
 
     public ArtStudent(int id, String name) {
@@ -22,13 +23,13 @@ public class ArtStudent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "student_id")
-    @ToString.Include
     private int id;
 
     @Column(name = "student_name")
-    @ToString.Include
     private String name;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(schema = "art_school", name = "students_classes_mapping",
             joinColumns = @JoinColumn(name = "student_id"),
