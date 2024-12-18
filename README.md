@@ -204,9 +204,9 @@ CREATE TABLE IF NOT EXISTS art_school.art_teachers(
 );
 ```
 
-Full list of commands is 
+Full list of commands is
 [here .MD](sql/art_school_schema) or
-[here .sql](sql/art_school_schema.sql) 
+[here .sql](sql/art_school_schema.sql)
 
 Data structure looks like this in pgAdmin:
 
@@ -450,7 +450,7 @@ Using `JPQL`, `Named`, `Native` and `Criteria` queries, implement Java methods f
 - Create 5 Teachers: `Mr. Smith`, `Ms. Johnson`, `Dr. Miller`, `Prof. Davis`, `Mrs. Williams`
 - Create from 3 to 10 Reviews done by each Teacher
 - Find Teachers which have Reviews more than given number
-- Find average rating of Reviews for each Teacher, 
+- Find average rating of Reviews for each Teacher,
   return greater than given average value, arrange in the descending order
 - Round rating to the nearest tenth of Reviews for given Teacher
 - Delete Reviews of given Teacher with rating lower than given value
@@ -521,7 +521,7 @@ Implement layered architecture for data access and processing:
 - Implement `CrudRepository` interface by `BaseCrudRepository` class.
 - Extend `CrudRepository` interface by `ArtTeacherRepository` interface with more specific find operation.
 - Implement `ArtTeacherRepository` interface by `ArtTeacherRepositoryImpl` class extending `BaseCrudRepository` class.
-- Create `ArtTeacherService` class to use `ArtTeacherRepositoryImpl` class. 
+- Create `ArtTeacherService` class to use `ArtTeacherRepositoryImpl` class.
 - Make sure data access happens at Repository layer
 - Make sure transactions are managed at Service layer
 - Create demo class for using Service and underlying Repository.
@@ -537,10 +537,10 @@ public class ArtTeacherRepositoryImpl extends BaseCrudRepository<ArtTeacher> imp
     @Override
     public List<ArtTeacher> findEagerTeachersByIds(EntityManager entityManager, List<Integer> teacherIds) {
         return entityManager.createQuery("""
-                                SELECT t FROM ArtTeacher t
-                                LEFT JOIN FETCH t.artReviews
-                                WHERE t.id IN :teacherIds
-                                """, ArtTeacher.class)
+                        SELECT t FROM ArtTeacher t
+                        LEFT JOIN FETCH t.artReviews
+                        WHERE t.id IN :teacherIds
+                        """, ArtTeacher.class)
                 .setParameter("teacherIds", teacherIds)
                 .getResultList();
     }
@@ -586,27 +586,32 @@ Complete implementation is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/h
 
 **Task**:
 
-Implement java methods that throws next Exceptions:
+Implement java methods that throws next `jakarta.persistence.PersistenceException`s:
 
-- `javax.persistence.TransactionRequiredException`
-- `javax.persistence.EntityExistsException`
-- `javax.persistence.EntityNotFoundException`
-- `javax.persistence.PersistenceException`
-- `javax.persistence.RollbackException`
-- `javax.persistence.OptimisticLockException`
-- `javax.persistence.NoResultException`
-- `javax.persistence.NonUniqueResultException`
-- `javax.persistence.QueryTimeoutException`
+- `jakarta.persistence.EntityNotFoundException`
+- `jakarta.persistence.LockTimeoutException`
+- `jakarta.persistence.NonUniqueResultException`
+- `jakarta.persistence.NoResultException`
+- `jakarta.persistence.PessimisticLockException`
+- `jakarta.persistence.QueryTimeoutException`
+- `jakarta.persistence.TransactionRequiredException`
 
 #### Challenge: Hibernate Exceptions
 
 **Task**:
 
-Implement java methods that throws next Exceptions:
+Implement java methods that throws next `org.hibernate.HibernateException`s:
 
 - `org.hibernate.HibernateException`
-- `org.hibernate.TransactionException`
+- `jakarta.persistence.EntityExistsException`
+  - `org.hibernate.NonUniqueObjectException`
+- `org.hibernate.LazyInitializationException`
 - `org.hibernate.QueryException`
 - `org.hibernate.ObjectNotFoundException`
-- `org.hibernate.LazyInitializationException`
-- `org.hibernate.StaleStateException`
+- `jakarta.persistence.RollbackException`
+  - `jakarta.persistence.OptimisticLockException`
+    - `org.hibernate.StaleStateException`
+- `jakarta.persistence.RollbackException`
+  - `org.hibernate.exception.ConstraintViolationException`
+    - `org.postgresql.util.PSQLException`
+- `org.hibernate.TransactionException`
