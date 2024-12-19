@@ -586,32 +586,47 @@ Complete implementation is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/h
 
 **Task**:
 
-Implement java methods that throws next `jakarta.persistence.PersistenceException`s:
+Implement java methods that throws next `jakarta.persistence.PersistenceException` exceptions:
 
 - `jakarta.persistence.EntityNotFoundException`
-- `jakarta.persistence.LockTimeoutException`
-- `jakarta.persistence.NonUniqueResultException`
 - `jakarta.persistence.NoResultException`
-- `jakarta.persistence.PessimisticLockException`
-- `jakarta.persistence.QueryTimeoutException`
 - `jakarta.persistence.TransactionRequiredException`
 
 #### Challenge: Hibernate Exceptions
 
 **Task**:
 
-Implement java methods that throws next `org.hibernate.HibernateException`s:
+Implement java methods that leads to next `org.hibernate.HibernateException` exceptions
+with corresponding stack including JPA and PSQL exceptions (if any):
 
-- `org.hibernate.HibernateException`
 - `jakarta.persistence.EntityExistsException`
-  - `org.hibernate.NonUniqueObjectException`
+    - `org.hibernate.NonUniqueObjectException`
+
 - `org.hibernate.LazyInitializationException`
-- `org.hibernate.QueryException`
+
+- `jakarta.persistence.LockTimeoutException`
+    - `org.hibernate.PessimisticLockException`
+        - `org.postgresql.util.PSQLException`
+
+- `jakarta.persistence.NonUniqueResultException`
+    - `org.hibernate.NonUniqueResultException`
+
+- `jakarta.persistence.PessimisticLockException`
+    - `org.hibernate.PessimisticLockException`
+        - `org.postgresql.util.PSQLException`
+
+- `jakarta.persistence.QueryTimeoutException`
+    - `org.hibernate.QueryTimeoutException`
+        - `org.postgresql.util.PSQLException`
+
 - `org.hibernate.ObjectNotFoundException`
+
 - `jakarta.persistence.RollbackException`
-  - `jakarta.persistence.OptimisticLockException`
-    - `org.hibernate.StaleStateException`
+    - `jakarta.persistence.OptimisticLockException`
+        - `org.hibernate.StaleStateException`
+
 - `jakarta.persistence.RollbackException`
-  - `org.hibernate.exception.ConstraintViolationException`
-    - `org.postgresql.util.PSQLException`
+    - `org.hibernate.exception.ConstraintViolationException`
+        - `org.postgresql.util.PSQLException`
+
 - `org.hibernate.TransactionException`
