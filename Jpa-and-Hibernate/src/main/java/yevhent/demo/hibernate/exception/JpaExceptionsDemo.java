@@ -13,16 +13,11 @@ public class JpaExceptionsDemo {
 
         ExceptionUtil.setupUncaughtExceptionHandler();
 
-        try {
-            System.out.println("=====throwEntityNotFoundException============================================");
-            throwEntityNotFoundException();
-            System.out.println("=====throwTransactionRequiredException====================================================");
-            throwTransactionRequiredException();
-            System.out.println("=====END====================================================");
-        } catch (Exception e) {
-            System.out.println("===== Caught exception in main thread:");
-            e.printStackTrace();
-        }
+        System.out.println("=====throwEntityNotFoundException============================================");
+        throwEntityNotFoundException();
+        System.out.println("=====throwTransactionRequiredException====================================================");
+        throwTransactionRequiredException();
+        System.out.println("=====END====================================================");
     }
 
     static void throwEntityNotFoundException() {
