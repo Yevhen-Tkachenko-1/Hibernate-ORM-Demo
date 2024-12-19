@@ -28,8 +28,7 @@ Implemented based on LinkedIn learning course:
     * [Challenge: Entity Relations in Persistent Context](#challenge-entity-relations-in-persistent-context)
     * [Challenge: CRUD Operations with Queries](#challenge-crud-operations-with-queries)
     * [Challenge: Service vs Repository](#challenge-service-vs-repository)
-    * [Challenge: JPA Exceptions](#challenge-jpa-exceptions)
-    * [Challenge: Hibernate Exceptions](#challenge-hibernate-exceptions)
+    * [Challenge: JPA, Hibernate and PSQL Exceptions](#challenge-jpa-hibernate-and-psql-exceptions)
 
 ### Project setup
 
@@ -590,38 +589,38 @@ Implement java methods that leads to next exceptions
 with corresponding stack including JPA, Hibernate and PSQL exceptions (if any):
 
 **JPA** `jakarta.persistence.PersistenceException` exceptions:
-   1. **EntityNotFound** `jakarta.persistence.EntityNotFoundException`
-   2. **NoResult** `jakarta.persistence.NoResultException`
-   3. **TransactionRequired** `jakarta.persistence.TransactionRequiredException`
+   1. EntityNotFound `jakarta.persistence.EntityNotFoundException`
+   2. NoResult `jakarta.persistence.NoResultException`
+   3. TransactionRequired `jakarta.persistence.TransactionRequiredException`
 
 **Hibernate** `org.hibernate.HibernateException` exceptions:
-   1. **LazyInitialization** 
+   1. LazyInitialization 
       - `org.hibernate.LazyInitializationException`
-   2. **NonUniqueObject** 
+   2. NonUniqueObject 
       - `jakarta.persistence.EntityExistsException`
         - `org.hibernate.NonUniqueObjectException`
-   3. **NonUniqueResult**
+   3. NonUniqueResult
       - `jakarta.persistence.NonUniqueResultException`
         - `org.hibernate.NonUniqueResultException`
-   4. **StaleState**
+   4. StaleState
       - `jakarta.persistence.RollbackException`
         - `jakarta.persistence.OptimisticLockException`
           - `org.hibernate.StaleStateException`
 
 **PSQL** `org.postgresql.util.PSQLException` exceptions:
-   1. **ConstraintViolation** 
+   1. ConstraintViolation 
       - `jakarta.persistence.RollbackException`
         -  `org.hibernate.exception.ConstraintViolationException`
            - `org.postgresql.util.PSQLException`
-   2. **LockTimeout** 
+   2. LockTimeout 
       - `jakarta.persistence.LockTimeoutException`
         - `org.hibernate.PessimisticLockException`
            - `org.postgresql.util.PSQLException`
-   3. **PessimisticLock** 
+   3. PessimisticLock 
       - `jakarta.persistence.PessimisticLockException`
         - `org.hibernate.PessimisticLockException`
            - `org.postgresql.util.PSQLException`
-   4. **QueryTimeoutException** 
+   4. QueryTimeoutException 
       - `jakarta.persistence.QueryTimeoutException`
           - `org.hibernate.QueryTimeoutException`
               - `org.postgresql.util.PSQLException`
