@@ -582,51 +582,51 @@ public class ArtSchoolService {
 
 Complete implementation is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/hibernate/repository).
 
-#### Challenge: JPA Exceptions
+#### Challenge: JPA, Hibernate and PSQL Exceptions
 
 **Task**:
 
-Implement java methods that throws next `jakarta.persistence.PersistenceException` exceptions:
+Implement java methods that leads to next exceptions
+with corresponding stack including JPA, Hibernate and PSQL exceptions (if any):
 
-- `jakarta.persistence.EntityNotFoundException`
-- `jakarta.persistence.NoResultException`
-- `jakarta.persistence.TransactionRequiredException`
+**JPA** `jakarta.persistence.PersistenceException` exceptions:
+   1. **EntityNotFound** `jakarta.persistence.EntityNotFoundException`
+   2. **NoResult** `jakarta.persistence.NoResultException`
+   3. **TransactionRequired** `jakarta.persistence.TransactionRequiredException`
 
-#### Challenge: Hibernate Exceptions
+**Hibernate** `org.hibernate.HibernateException` exceptions:
+   1. **LazyInitialization** 
+      - `org.hibernate.LazyInitializationException`
+   2. **NonUniqueObject** 
+      - `jakarta.persistence.EntityExistsException`
+        - `org.hibernate.NonUniqueObjectException`
+   3. **NonUniqueResult**
+      - `jakarta.persistence.NonUniqueResultException`
+        - `org.hibernate.NonUniqueResultException`
+   4. **StaleState**
+      - `jakarta.persistence.RollbackException`
+        - `jakarta.persistence.OptimisticLockException`
+          - `org.hibernate.StaleStateException`
 
-**Task**:
+**PSQL** `org.postgresql.util.PSQLException` exceptions:
+   1. **ConstraintViolation** 
+      - `jakarta.persistence.RollbackException`
+        -  `org.hibernate.exception.ConstraintViolationException`
+           - `org.postgresql.util.PSQLException`
+   2. **LockTimeout** 
+      - `jakarta.persistence.LockTimeoutException`
+        - `org.hibernate.PessimisticLockException`
+           - `org.postgresql.util.PSQLException`
+   3. **PessimisticLock** 
+      - `jakarta.persistence.PessimisticLockException`
+        - `org.hibernate.PessimisticLockException`
+           - `org.postgresql.util.PSQLException`
+   4. **QueryTimeoutException** 
+      - `jakarta.persistence.QueryTimeoutException`
+          - `org.hibernate.QueryTimeoutException`
+              - `org.postgresql.util.PSQLException`
 
-Implement java methods that leads to next `org.hibernate.HibernateException` exceptions
-with corresponding stack including JPA and PSQL exceptions (if any):
-
-- `jakarta.persistence.EntityExistsException`
-    - `org.hibernate.NonUniqueObjectException`
-
-- `org.hibernate.LazyInitializationException`
-
-- `jakarta.persistence.LockTimeoutException`
-    - `org.hibernate.PessimisticLockException`
-        - `org.postgresql.util.PSQLException`
-
-- `jakarta.persistence.NonUniqueResultException`
-    - `org.hibernate.NonUniqueResultException`
-
-- `jakarta.persistence.PessimisticLockException`
-    - `org.hibernate.PessimisticLockException`
-        - `org.postgresql.util.PSQLException`
-
-- `jakarta.persistence.QueryTimeoutException`
-    - `org.hibernate.QueryTimeoutException`
-        - `org.postgresql.util.PSQLException`
 
 - `org.hibernate.ObjectNotFoundException`
-
-- `jakarta.persistence.RollbackException`
-    - `jakarta.persistence.OptimisticLockException`
-        - `org.hibernate.StaleStateException`
-
-- `jakarta.persistence.RollbackException`
-    - `org.hibernate.exception.ConstraintViolationException`
-        - `org.postgresql.util.PSQLException`
 
 - `org.hibernate.TransactionException`
