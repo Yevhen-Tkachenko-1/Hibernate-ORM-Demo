@@ -2,11 +2,9 @@ package yevhent.demo.hibernate.exception;
 
 import jakarta.persistence.*;
 import org.hibernate.LazyInitializationException;
+import org.hibernate.PropertyValueException;
 import yevhent.demo.hibernate.configuration.ArtSchoolFactory;
-import yevhent.demo.hibernate.entity.ArtReview;
-import yevhent.demo.hibernate.entity.ArtTeacher;
-import yevhent.demo.hibernate.entity.SelfIdentifiable;
-import yevhent.demo.hibernate.entity.VersionedItem;
+import yevhent.demo.hibernate.entity.*;
 
 public class HibernateExceptionsDemo {
 
@@ -20,8 +18,14 @@ public class HibernateExceptionsDemo {
         throwNonUniqueObjectException();
         System.out.println("=====throwNonUniqueResultException====================================================");
         throwNonUniqueResultException();
+        System.out.println("=====throwObjectDeletedException====================================================");
+        throwObjectDeletedException();
+        System.out.println("=====throwPropertyValueException====================================================");
+        throwPropertyValueException();
         System.out.println("=====throwStaleStateException====================================================");
         throwStaleStateException();
+        System.out.println("=====throwUnknownEntityTypeException====================================================");
+        throwUnknownEntityTypeException();
         System.out.println("=====END====================================================");
     }
 
@@ -80,6 +84,39 @@ public class HibernateExceptionsDemo {
         }
     }
 
+    static void throwObjectDeletedException() {
+        int id = ExceptionUtil.saveNewTeacherToDB();
+        try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
+             EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+            entityManager.getTransaction().begin();
+            ArtTeacher teacher = entityManager.find(ArtTeacher.class, id);
+            entityManager.remove(teacher);
+            entityManager.merge(teacher); // throws Exception
+            entityManager.getTransaction().commit();
+        } catch (IllegalArgumentException e) {
+            System.out.println(e);
+            // java.lang.IllegalArgumentException
+            System.out.println(e.getCause());
+            // org.hibernate.ObjectDeletedException:
+            // deleted instance passed to merge: [yevhent.demo.hibernate.entity.ArtTeacher#<null>]
+        }
+    }
+
+    static void throwPropertyValueException() {
+        try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
+             EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+            entityManager.getTransaction().begin();
+            MandatoryNamedItem mandatoryNamed = new MandatoryNamedItem();
+            entityManager.persist(mandatoryNamed); // throws Exception
+            entityManager.getTransaction().commit();
+        } catch (PropertyValueException e) {
+            System.out.println(e);
+            // org.hibernate.PropertyValueException:
+            // not-null property references a null or transient value:
+            // yevhent.demo.hibernate.entity.MandatoryNamedItem.name
+        }
+    }
+
     static void throwStaleStateException() {
         int itemId = ExceptionUtil.saveNewVersionedItemToDB();
         try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
@@ -108,6 +145,23 @@ public class HibernateExceptionsDemo {
             // org.hibernate.StaleObjectStateException:
             // Row was updated or deleted by another transaction (or unsaved-value mapping was incorrect):
             // [yevhent.demo.hibernate.entity.VersionedItem#33]
+        }
+    }
+
+    static void throwUnknownEntityTypeException() {
+
+        try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
+             EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+            entityManager.getTransaction().begin();
+            UnknownEntity unknownEntity = new UnknownEntity();
+            entityManager.persist(unknownEntity); // throws Exception
+            entityManager.getTransaction().commit();
+        } catch (IllegalArgumentException e) {
+            System.out.println(e);
+            // java.lang.IllegalArgumentException
+            System.out.println(e.getCause());
+            // org.hibernate.UnknownEntityTypeException:
+            // Unable to locate persister: yevhent.demo.hibernate.entity.UnknownEntity
         }
     }
 }
