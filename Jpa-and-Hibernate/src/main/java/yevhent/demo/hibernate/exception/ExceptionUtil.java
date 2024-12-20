@@ -19,6 +19,17 @@ import java.util.stream.IntStream;
 
 public class ExceptionUtil {
 
+    static int saveNewTeacherToDB() {
+        try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
+             EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+            entityManager.getTransaction().begin();
+            ArtTeacher teacher = new ArtTeacher("Prof. Davis");
+            entityManager.persist(teacher);
+            entityManager.getTransaction().commit();
+            return teacher.getId();
+        }
+    }
+
     static int saveNewTeacherAndReviewsToDB() {
         try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
              EntityManager entityManager = entityManagerFactory.createEntityManager()) {
