@@ -9,6 +9,7 @@
         <class>yevhent.demo.hibernate.entity.ArtReview</class>
         <class>yevhent.demo.hibernate.entity.SelfIdentifiable</class>
         <class>yevhent.demo.hibernate.entity.VersionedItem</class>
+        <class>yevhent.demo.hibernate.entity.MandatoryNamedItem</class>
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver" />
             <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/hibernate" />
@@ -16,4 +17,3 @@
         </properties>
     </persistence-unit>
 </persistence>
-
