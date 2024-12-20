@@ -15,3 +15,12 @@ CREATE TABLE IF NOT EXISTS public.versioned_items(
     PRIMARY KEY (item_id)
 );
 ```
+
+**MandatoryNamedItem** Table:
+```sql
+CREATE TABLE IF NOT EXISTS public.mandatory_named_items(
+    mandatory_named_item_id   serial,
+    mandatory_named_item_name varchar(255) NOT NULL,
+    PRIMARY KEY (mandatory_named_item_id)
+);
+```
