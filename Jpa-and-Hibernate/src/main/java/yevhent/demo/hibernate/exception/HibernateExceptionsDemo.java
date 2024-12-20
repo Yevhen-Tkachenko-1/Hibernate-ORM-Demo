@@ -12,24 +12,20 @@ public class HibernateExceptionsDemo {
         ExceptionUtil.hideLowLevelLogs();
         ExceptionUtil.setupUncaughtExceptionHandler();
 
-        System.out.println("=====throwLazyInitializationException============================================");
         throwLazyInitializationException();
-        System.out.println("=====throwNonUniqueObjectException============================================");
         throwNonUniqueObjectException();
-        System.out.println("=====throwNonUniqueResultException====================================================");
         throwNonUniqueResultException();
-        System.out.println("=====throwObjectDeletedException====================================================");
         throwObjectDeletedException();
-        System.out.println("=====throwPropertyValueException====================================================");
+        throwPersistentObjectException();
         throwPropertyValueException();
-        System.out.println("=====throwStaleStateException====================================================");
+        throwQuerySyntaxException();
         throwStaleStateException();
-        System.out.println("=====throwUnknownEntityTypeException====================================================");
         throwUnknownEntityTypeException();
         System.out.println("=====END====================================================");
     }
 
     static void throwLazyInitializationException() {
+        System.out.println("=====throwLazyInitializationException============================================");
         int teacherId = ExceptionUtil.saveNewTeacherAndReviewsToDB();
         ArtTeacher teacher;
         try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
@@ -48,6 +44,7 @@ public class HibernateExceptionsDemo {
     }
 
     static void throwNonUniqueObjectException() {
+        System.out.println("=====throwNonUniqueObjectException============================================");
         try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
              EntityManager entityManager = entityManagerFactory.createEntityManager()) {
             entityManager.getTransaction().begin();
@@ -65,6 +62,7 @@ public class HibernateExceptionsDemo {
     }
 
     static void throwNonUniqueResultException() {
+        System.out.println("=====throwNonUniqueResultException====================================================");
         int teacherId = ExceptionUtil.saveNewTeacherAndReviewsToDB();
         try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
              EntityManager entityManager = entityManagerFactory.createEntityManager()) {
@@ -85,6 +83,7 @@ public class HibernateExceptionsDemo {
     }
 
     static void throwObjectDeletedException() {
+        System.out.println("=====throwObjectDeletedException====================================================");
         int id = ExceptionUtil.saveNewTeacherToDB();
         try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
              EntityManager entityManager = entityManagerFactory.createEntityManager()) {
@@ -102,7 +101,27 @@ public class HibernateExceptionsDemo {
         }
     }
 
+    static void throwPersistentObjectException() {
+        System.out.println("=====throwPersistentObjectException====================================================");
+        int id = ExceptionUtil.saveNewTeacherToDB();
+        try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
+             EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+            entityManager.getTransaction().begin();
+            ArtTeacher teacher = entityManager.find(ArtTeacher.class, id);
+            entityManager.detach(teacher);
+            entityManager.persist(teacher); // throws Exception
+            entityManager.getTransaction().commit();
+        } catch (EntityExistsException e) {
+            System.out.println(e);
+            // jakarta.persistence.EntityExistsException
+            System.out.println(e.getCause());
+            // org.hibernate.PersistentObjectException:
+            // detached entity passed to persist: yevhent.demo.hibernate.entity.ArtTeacher
+        }
+    }
+
     static void throwPropertyValueException() {
+        System.out.println("=====throwPropertyValueException====================================================");
         try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
              EntityManager entityManager = entityManagerFactory.createEntityManager()) {
             entityManager.getTransaction().begin();
@@ -117,7 +136,25 @@ public class HibernateExceptionsDemo {
         }
     }
 
+    static void throwQuerySyntaxException() {
+        System.out.println("=====throwQuerySyntaxException====================================================");
+        try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
+             EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+            entityManager.getTransaction().begin();
+            Query invalidQuery = entityManager.createQuery("SELECTING t FROM ArtTeacher t"); // throws Exception
+            invalidQuery.getResultList();
+            entityManager.getTransaction().commit();
+        } catch (IllegalArgumentException e) {
+            System.out.println(e);
+            // java.lang.IllegalArgumentException
+            System.out.println(e.getCause());
+            // org.hibernate.query.SyntaxException:
+            // At 1:0 and token 'SELECTING', no viable alternative at input '*SELECTING t FROM ArtTeacher t' [SELECTING t FROM ArtTeacher t]
+        }
+    }
+
     static void throwStaleStateException() {
+        System.out.println("=====throwStaleStateException====================================================");
         int itemId = ExceptionUtil.saveNewVersionedItemToDB();
         try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
              EntityManager entityManager1 = entityManagerFactory.createEntityManager();
@@ -149,7 +186,7 @@ public class HibernateExceptionsDemo {
     }
 
     static void throwUnknownEntityTypeException() {
-
+        System.out.println("=====throwUnknownEntityTypeException====================================================");
         try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
              EntityManager entityManager = entityManagerFactory.createEntityManager()) {
             entityManager.getTransaction().begin();
