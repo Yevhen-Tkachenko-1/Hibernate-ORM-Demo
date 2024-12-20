@@ -585,7 +585,7 @@ Complete implementation is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/h
 
 **Task**:
 
-Implement java methods that leads to next exceptions
+Implement java methods that lead to next exceptions
 with corresponding stack including JPA, Hibernate and PSQL exceptions (if any):
 
 | Type           | Name                                  | Stack Trace                                                                                                                                                                  |
@@ -602,9 +602,8 @@ with corresponding stack including JPA, Hibernate and PSQL exceptions (if any):
 |                | PropertyValue                         | `org.hibernate.PropertyValueException`                                                                                                                                       |
 |                | StaleState                            | `jakarta.persistence.RollbackException`<br>&emsp;&emsp;`jakarta.persistence.OptimisticLockException`<br>&emsp;&emsp;&emsp;&emsp;`org.hibernate.StaleStateException`          |
 |                | UnknownEntityType                     | `java.lang.IllegalArgumentException`<br>&emsp;&emsp;`org.hibernate.UnknownEntityTypeException`                                                                               |
-|                | PersistentObjectException             |                                                                                                                                                                              |
-|                | QuerySyntaxException                  |                                                                                                                                                                              |
-|                | SessionException                      |                                                                                                                                                                              |
+|                | PersistentObjectException             | `jakarta.persistence.EntityExistsException`<br>&emsp;&emsp;`org.hibernate.PersistentObjectException`                                                                         |
+|                | QuerySyntaxException                  | `java.lang.IllegalArgumentException`<br>&emsp;&emsp;`org.hibernate.query.SyntaxException`                                                                                    |
 |                | DuplicateMappingException             |                                                                                                                                                                              |
 |                | WrongClassException                   |                                                                                                                                                                              |
 |                | IdentifierGenerationException         |                                                                                                                                                                              |
