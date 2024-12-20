@@ -588,44 +588,35 @@ Complete implementation is [here](Jpa-and-Hibernate/src/main/java/yevhent/demo/h
 Implement java methods that leads to next exceptions
 with corresponding stack including JPA, Hibernate and PSQL exceptions (if any):
 
-**JPA** `jakarta.persistence.PersistenceException` exceptions:
-   1. EntityNotFound `jakarta.persistence.EntityNotFoundException`
-   2. NoResult `jakarta.persistence.NoResultException`
-   3. TransactionRequired `jakarta.persistence.TransactionRequiredException`
-
-**Hibernate** `org.hibernate.HibernateException` exceptions:
-   1. LazyInitialization 
-      - `org.hibernate.LazyInitializationException`
-   2. NonUniqueObject 
-      - `jakarta.persistence.EntityExistsException`
-        - `org.hibernate.NonUniqueObjectException`
-   3. NonUniqueResult
-      - `jakarta.persistence.NonUniqueResultException`
-        - `org.hibernate.NonUniqueResultException`
-   4. StaleState
-      - `jakarta.persistence.RollbackException`
-        - `jakarta.persistence.OptimisticLockException`
-          - `org.hibernate.StaleStateException`
-
-**PSQL** `org.postgresql.util.PSQLException` exceptions:
-   1. ConstraintViolation 
-      - `jakarta.persistence.RollbackException`
-        -  `org.hibernate.exception.ConstraintViolationException`
-           - `org.postgresql.util.PSQLException`
-   2. LockTimeout 
-      - `jakarta.persistence.LockTimeoutException`
-        - `org.hibernate.PessimisticLockException`
-           - `org.postgresql.util.PSQLException`
-   3. PessimisticLock 
-      - `jakarta.persistence.PessimisticLockException`
-        - `org.hibernate.PessimisticLockException`
-           - `org.postgresql.util.PSQLException`
-   4. QueryTimeoutException 
-      - `jakarta.persistence.QueryTimeoutException`
-          - `org.hibernate.QueryTimeoutException`
-              - `org.postgresql.util.PSQLException`
-
-
-- `org.hibernate.ObjectNotFoundException`
-
-- `org.hibernate.TransactionException`
+| Type           | Name                                  | Stack Trace                                                                                                                                                                  |
+|----------------|---------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|                |                                       |                                                                                                                                                                              |
+| **JPA**        | EntityNotFound                        | `jakarta.persistence.EntityNotFoundException`                                                                                                                                |
+|                | NoResult                              | `jakarta.persistence.NoResultException`                                                                                                                                      |
+|                | TransactionRequired                   | `jakarta.persistence.TransactionRequiredException`                                                                                                                           |
+|                |                                       |                                                                                                                                                                              |
+| **Hibernate**  | LazyInitialization                    | `org.hibernate.LazyInitializationException`                                                                                                                                  |
+|                | NonUniqueObject                       | `jakarta.persistence.EntityExistsException`<br>&emsp;&emsp;`org.hibernate.NonUniqueObjectException`                                                                          |
+|                | NonUniqueResult                       | `jakarta.persistence.NonUniqueResultException`<br>&emsp;&emsp;`org.hibernate.NonUniqueResultException`                                                                       |
+|                | ObjectDeleted                         | `java.lang.IllegalArgumentException`<br>&emsp;&emsp;`org.hibernate.ObjectDeletedException`                                                                                   |
+|                | PropertyValue                         | `org.hibernate.PropertyValueException`                                                                                                                                       |
+|                | StaleState                            | `jakarta.persistence.RollbackException`<br>&emsp;&emsp;`jakarta.persistence.OptimisticLockException`<br>&emsp;&emsp;&emsp;&emsp;`org.hibernate.StaleStateException`          |
+|                | UnknownEntityType                     | `java.lang.IllegalArgumentException`<br>&emsp;&emsp;`org.hibernate.UnknownEntityTypeException`                                                                               |
+|                | PersistentObjectException             |                                                                                                                                                                              |
+|                | QuerySyntaxException                  |                                                                                                                                                                              |
+|                | SessionException                      |                                                                                                                                                                              |
+|                | DuplicateMappingException             |                                                                                                                                                                              |
+|                | WrongClassException                   |                                                                                                                                                                              |
+|                | IdentifierGenerationException         |                                                                                                                                                                              |
+|                |                                       |                                                                                                                                                                              |
+| **PostgreSQL** | ConstraintViolation                   | `jakarta.persistence.RollbackException`<br>&emsp;&emsp;`org.hibernate.exception.ConstraintViolationException`<br>&emsp;&emsp;&emsp;&emsp;`org.postgresql.util.PSQLException` |
+|                | LockTimeout                           | `jakarta.persistence.LockTimeoutException`<br>&emsp;&emsp;`org.hibernate.PessimisticLockException`<br>&emsp;&emsp;&emsp;&emsp;`org.postgresql.util.PSQLException`            |
+|                | PessimisticLock                       | `jakarta.persistence.PessimisticLockException`<br>&emsp;&emsp;`org.hibernate.PessimisticLockException`<br>&emsp;&emsp;&emsp;&emsp;`org.postgresql.util.PSQLException`        |
+|                | QueryTimeoutException                 | `jakarta.persistence.QueryTimeoutException`<br>&emsp;&emsp;`org.hibernate.QueryTimeoutException`<br>&emsp;&emsp;&emsp;&emsp;`org.postgresql.util.PSQLException`              |
+|                | DataException                         |                                                                                                                                                                              |
+|                | IntegrityConstraintViolationException |                                                                                                                                                                              |
+|                | SerializationFailureException         |                                                                                                                                                                              |
+|                | InvalidColumnIndexException           |                                                                                                                                                                              |
+|                | DataTruncationException               |                                                                                                                                                                              |
+|                | InvalidQueryException                 |                                                                                                                                                                              |
+|                | SQLFeatureNotSupportedException       |                                                                                                                                                                              |
