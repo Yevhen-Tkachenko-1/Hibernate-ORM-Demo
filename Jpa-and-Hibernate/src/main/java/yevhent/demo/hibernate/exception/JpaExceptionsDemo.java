@@ -5,7 +5,7 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.TransactionRequiredException;
 import yevhent.demo.hibernate.configuration.ArtSchoolFactory;
-import yevhent.demo.hibernate.entity.ArtTeacher;
+import yevhent.demo.hibernate.entity.artschool.ArtTeacher;
 
 public class JpaExceptionsDemo {
 
@@ -31,7 +31,7 @@ public class JpaExceptionsDemo {
         } catch (EntityNotFoundException e) {
             System.out.println(e);
             // jakarta.persistence.EntityNotFoundException:
-            // Unable to find yevhent.demo.hibernate.entity.ArtTeacher with id 320
+            // Unable to find yevhent.demo.hibernate.entity.artschool.ArtTeacher with id 320
         }
     }
 

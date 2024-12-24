@@ -4,7 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.RollbackException;
 import yevhent.demo.hibernate.configuration.ArtSchoolFactory;
-import yevhent.demo.hibernate.entity.SelfIdentifiable;
+import yevhent.demo.hibernate.entity.general.SelfIdentifiable;
 
 import java.util.Map;
 

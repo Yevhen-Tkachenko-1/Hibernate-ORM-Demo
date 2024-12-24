@@ -5,10 +5,10 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.LockModeType;
 import lombok.SneakyThrows;
 import yevhent.demo.hibernate.configuration.ArtSchoolFactory;
-import yevhent.demo.hibernate.entity.ArtReview;
-import yevhent.demo.hibernate.entity.ArtTeacher;
-import yevhent.demo.hibernate.entity.SelfIdentifiable;
-import yevhent.demo.hibernate.entity.VersionedItem;
+import yevhent.demo.hibernate.entity.artschool.ArtReview;
+import yevhent.demo.hibernate.entity.artschool.ArtTeacher;
+import yevhent.demo.hibernate.entity.general.SelfIdentifiable;
+import yevhent.demo.hibernate.entity.general.VersionedItem;
 
 import java.util.List;
 import java.util.Map;

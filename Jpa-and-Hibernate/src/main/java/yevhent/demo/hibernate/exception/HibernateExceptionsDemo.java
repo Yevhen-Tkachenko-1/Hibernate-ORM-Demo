@@ -4,7 +4,12 @@ import jakarta.persistence.*;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.PropertyValueException;
 import yevhent.demo.hibernate.configuration.ArtSchoolFactory;
-import yevhent.demo.hibernate.entity.*;
+import yevhent.demo.hibernate.entity.artschool.ArtReview;
+import yevhent.demo.hibernate.entity.artschool.ArtTeacher;
+import yevhent.demo.hibernate.entity.general.MandatoryNamedItem;
+import yevhent.demo.hibernate.entity.general.SelfIdentifiable;
+import yevhent.demo.hibernate.entity.general.UnknownEntity;
+import yevhent.demo.hibernate.entity.general.VersionedItem;
 
 public class HibernateExceptionsDemo {
 
@@ -38,7 +43,7 @@ public class HibernateExceptionsDemo {
             System.out.println(e);
             // org.hibernate.LazyInitializationException:
             // failed to lazily initialize a collection of role:
-            // yevhent.demo.hibernate.entity.ArtTeacher.artReviews:
+            // yevhent.demo.hibernate.entity.artschool.ArtTeacher.artReviews:
             // could not initialize proxy - no Session
         }
     }
@@ -97,7 +102,7 @@ public class HibernateExceptionsDemo {
             // java.lang.IllegalArgumentException
             System.out.println(e.getCause());
             // org.hibernate.ObjectDeletedException:
-            // deleted instance passed to merge: [yevhent.demo.hibernate.entity.ArtTeacher#<null>]
+            // deleted instance passed to merge: [yevhent.demo.hibernate.entity.artschool.ArtTeacher#<null>]
         }
     }
 
@@ -116,7 +121,7 @@ public class HibernateExceptionsDemo {
             // jakarta.persistence.EntityExistsException
             System.out.println(e.getCause());
             // org.hibernate.PersistentObjectException:
-            // detached entity passed to persist: yevhent.demo.hibernate.entity.ArtTeacher
+            // detached entity passed to persist: yevhent.demo.hibernate.entity.artschool.ArtTeacher
         }
     }
 
@@ -132,7 +137,7 @@ public class HibernateExceptionsDemo {
             System.out.println(e);
             // org.hibernate.PropertyValueException:
             // not-null property references a null or transient value:
-            // yevhent.demo.hibernate.entity.MandatoryNamedItem.name
+            // yevhent.demo.hibernate.entity.general.MandatoryNamedItem.name
         }
     }
 
@@ -177,11 +182,11 @@ public class HibernateExceptionsDemo {
             System.out.println(e.getCause());
             // jakarta.persistence.OptimisticLockException:
             // Row was updated or deleted by another transaction (or unsaved-value mapping was incorrect):
-            // [yevhent.demo.hibernate.entity.VersionedItem#33]
+            // [yevhent.demo.hibernate.entity.general.VersionedItem#33]
             System.out.println(e.getCause().getCause());
             // org.hibernate.StaleObjectStateException:
             // Row was updated or deleted by another transaction (or unsaved-value mapping was incorrect):
-            // [yevhent.demo.hibernate.entity.VersionedItem#33]
+            // [yevhent.demo.hibernate.entity.general.VersionedItem#33]
         }
     }
 
@@ -198,7 +203,24 @@ public class HibernateExceptionsDemo {
             // java.lang.IllegalArgumentException
             System.out.println(e.getCause());
             // org.hibernate.UnknownEntityTypeException:
-            // Unable to locate persister: yevhent.demo.hibernate.entity.UnknownEntity
+            // Unable to locate persister: yevhent.demo.hibernate.entity.general.UnknownEntity
+        }
+    }
+
+    static void throwWrongClassException() {
+        System.out.println("=====throwWrongClassException====================================================");
+        try (EntityManagerFactory entityManagerFactory = ArtSchoolFactory.createEntityManagerFactory();
+             EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+            entityManager.getTransaction().begin();
+            UnknownEntity unknownEntity = new UnknownEntity();
+            entityManager.persist(unknownEntity); // throws Exception
+            entityManager.getTransaction().commit();
+        } catch (IllegalArgumentException e) {
+            System.out.println(e);
+            // java.lang.IllegalArgumentException
+            System.out.println(e.getCause());
+            // org.hibernate.UnknownEntityTypeException:
+            // Unable to locate persister: yevhent.demo.hibernate.entity.general.UnknownEntity
         }
     }
 }
