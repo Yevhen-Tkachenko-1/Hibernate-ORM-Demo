@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import yevhent.demo.hibernate.entity.general.Identifiable;
+import yevhent.demo.hibernate.entity.Identifiable;
 
 @Entity
 @Table(schema = "public", name = "mandatory_named_items")

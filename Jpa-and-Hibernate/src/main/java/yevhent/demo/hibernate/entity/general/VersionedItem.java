@@ -2,6 +2,7 @@ package yevhent.demo.hibernate.entity.general;
 
 import jakarta.persistence.*;
 import lombok.*;
+import yevhent.demo.hibernate.entity.Identifiable;
 
 @Entity
 @Table(schema = "public", name = "versioned_items")
@@ -11,7 +12,7 @@ import lombok.*;
 @Getter
 @EqualsAndHashCode
 @ToString
-public class VersionedItem {
+public class VersionedItem implements Identifiable {
 
     public VersionedItem(String name) {
         this.name = name;

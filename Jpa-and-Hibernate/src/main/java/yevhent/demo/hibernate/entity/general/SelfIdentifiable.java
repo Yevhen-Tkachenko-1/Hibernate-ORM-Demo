@@ -2,6 +2,7 @@ package yevhent.demo.hibernate.entity.general;
 
 import jakarta.persistence.*;
 import lombok.*;
+import yevhent.demo.hibernate.entity.Identifiable;
 
 @Entity
 @Table(schema = "public", name = "self_assigned_ids")
@@ -9,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Setter
 @Getter
-public class SelfIdentifiable {
+public class SelfIdentifiable implements Identifiable {
 
     @Id
     @Column(name = "identity_id")
