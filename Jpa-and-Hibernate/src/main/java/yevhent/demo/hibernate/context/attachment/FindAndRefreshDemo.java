@@ -3,7 +3,7 @@ package yevhent.demo.hibernate.context.attachment;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import yevhent.demo.hibernate.configuration.ArtSchoolFactory;
-import yevhent.demo.hibernate.entity.ArtStudent;
+import yevhent.demo.hibernate.entity.artschool.ArtStudent;
 
 public class FindAndRefreshDemo {
     public static void main(String[] args) {

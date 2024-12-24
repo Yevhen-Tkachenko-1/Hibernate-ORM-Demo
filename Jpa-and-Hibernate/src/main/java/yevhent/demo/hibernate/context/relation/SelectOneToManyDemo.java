@@ -3,8 +3,8 @@ package yevhent.demo.hibernate.context.relation;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import yevhent.demo.hibernate.configuration.ArtSchoolFactory;
-import yevhent.demo.hibernate.entity.ArtReview;
-import yevhent.demo.hibernate.entity.ArtTeacher;
+import yevhent.demo.hibernate.entity.artschool.ArtReview;
+import yevhent.demo.hibernate.entity.artschool.ArtTeacher;
 
 import java.util.List;
 import java.util.stream.Collectors;

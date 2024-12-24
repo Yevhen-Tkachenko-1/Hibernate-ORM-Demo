@@ -72,10 +72,10 @@ under `src/main/resources/META-INF` directory like this:
     <!-- Define Persistence Unit -->
     <persistence-unit name="art_school" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <class>yevhent.demo.hibernate.entity.ArtStudent</class>
-        <class>yevhent.demo.hibernate.entity.ArtTeacher</class>
-        <class>yevhent.demo.hibernate.entity.ArtClass</class>
-        <class>yevhent.demo.hibernate.entity.ArtReview</class>
+        <class>yevhent.demo.hibernate.entity.artschool.ArtStudent</class>
+        <class>yevhent.demo.hibernate.entity.artschool.ArtTeacher</class>
+        <class>yevhent.demo.hibernate.entity.artschool.ArtClass</class>
+        <class>yevhent.demo.hibernate.entity.artschool.ArtReview</class>
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/hibernate"/>
@@ -273,7 +273,7 @@ Implement java methods for next operations
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import yevhent.demo.hibernate.configuration.ArtSchoolFactory;
-import yevhent.demo.hibernate.entity.ArtStudent;
+import yevhent.demo.hibernate.entity.artschool.ArtStudent;
 
 public class PersistAndCreateDemo {
     public static void main(String[] args) {
@@ -321,7 +321,7 @@ Implement java methods for next operations
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import yevhent.demo.hibernate.configuration.ArtSchoolFactory;
-import yevhent.demo.hibernate.entity.ArtStudent;
+import yevhent.demo.hibernate.entity.artschool.ArtStudent;
 
 public class AttachAndUpdateDemo {
     public static void main(String[] args) {
@@ -409,8 +409,8 @@ public class ArtClass {
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import yevhent.demo.hibernate.configuration.ArtSchoolFactory;
-import yevhent.demo.hibernate.entity.ArtClass;
-import yevhent.demo.hibernate.entity.ArtTeacher;
+import yevhent.demo.hibernate.entity.artschool.ArtClass;
+import yevhent.demo.hibernate.entity.artschool.ArtTeacher;
 
 /**
  * Unidirectional relation between Teacher and Class, 
@@ -463,8 +463,8 @@ import jakarta.persistence.Tuple;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.Query;
 import yevhent.demo.hibernate.configuration.ArtSchoolFactory;
-import yevhent.demo.hibernate.entity.ArtReview;
-import yevhent.demo.hibernate.entity.ArtTeacher;
+import yevhent.demo.hibernate.entity.artschool.ArtReview;
+import yevhent.demo.hibernate.entity.artschool.ArtTeacher;
 import yevhent.demo.hibernate.query.crud.CrudQuery;
 import yevhent.demo.hibernate.query.crud.CrudQueryUser;
 
@@ -529,7 +529,7 @@ Implement layered architecture for data access and processing:
 
 ```java
 import jakarta.persistence.EntityManager;
-import yevhent.demo.hibernate.entity.ArtTeacher;
+import yevhent.demo.hibernate.entity.artschool.ArtTeacher;
 
 public class ArtTeacherRepositoryImpl extends BaseCrudRepository<ArtTeacher> implements ArtTeacherRepository {
 
@@ -549,8 +549,8 @@ public class ArtTeacherRepositoryImpl extends BaseCrudRepository<ArtTeacher> imp
 ```java
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import yevhent.demo.hibernate.entity.ArtReview;
-import yevhent.demo.hibernate.entity.ArtTeacher;
+import yevhent.demo.hibernate.entity.artschool.ArtReview;
+import yevhent.demo.hibernate.entity.artschool.ArtTeacher;
 
 @RequiredArgsConstructor
 public class ArtSchoolService {
@@ -604,7 +604,6 @@ with corresponding stack including JPA, Hibernate and PSQL exceptions (if any):
 |                | UnknownEntityType                     | `java.lang.IllegalArgumentException`<br>&emsp;&emsp;`org.hibernate.UnknownEntityTypeException`                                                                               |
 |                | PersistentObjectException             | `jakarta.persistence.EntityExistsException`<br>&emsp;&emsp;`org.hibernate.PersistentObjectException`                                                                         |
 |                | QuerySyntaxException                  | `java.lang.IllegalArgumentException`<br>&emsp;&emsp;`org.hibernate.query.SyntaxException`                                                                                    |
-|                | DuplicateMappingException             |                                                                                                                                                                              |
 |                | WrongClassException                   |                                                                                                                                                                              |
 |                | IdentifierGenerationException         |                                                                                                                                                                              |
 |                |                                       |                                                                                                                                                                              |

@@ -3,8 +3,8 @@ package yevhent.demo.hibernate.context.relation;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import yevhent.demo.hibernate.configuration.ArtSchoolFactory;
-import yevhent.demo.hibernate.entity.ArtClass;
-import yevhent.demo.hibernate.entity.ArtTeacher;
+import yevhent.demo.hibernate.entity.artschool.ArtClass;
+import yevhent.demo.hibernate.entity.artschool.ArtTeacher;
 
 /**
  * Unidirectional relation between Teacher and Class,
