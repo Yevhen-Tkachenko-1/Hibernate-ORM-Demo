@@ -1,4 +1,4 @@
-package yevhent.demo.hibernate.entity;
+package yevhent.demo.hibernate.entity.general;
 
 /**
  * - Not annotated with @Entity at class level

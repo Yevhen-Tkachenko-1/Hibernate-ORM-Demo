@@ -1,4 +1,4 @@
-package yevhent.demo.hibernate.entity;
+package yevhent.demo.hibernate.entity.general;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,4 +14,6 @@ public class SelfIdentifiable {
     @Id
     @Column(name = "identity_id")
     private int id;
+
+    // method add 2 numbers
 }

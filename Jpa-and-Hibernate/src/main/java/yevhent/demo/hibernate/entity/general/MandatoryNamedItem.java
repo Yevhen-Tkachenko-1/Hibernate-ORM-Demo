@@ -1,10 +1,11 @@
-package yevhent.demo.hibernate.entity;
+package yevhent.demo.hibernate.entity.general;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import yevhent.demo.hibernate.entity.general.Identifiable;
 
 @Entity
 @Table(schema = "public", name = "mandatory_named_items")
@@ -12,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
-public class MandatoryNamedItem implements Identifiable{
+public class MandatoryNamedItem implements Identifiable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
