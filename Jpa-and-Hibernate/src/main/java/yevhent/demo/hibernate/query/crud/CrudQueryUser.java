@@ -1,8 +1,7 @@
 package yevhent.demo.hibernate.query.crud;
 
-import yevhent.demo.hibernate.entity.ArtReview;
-import yevhent.demo.hibernate.entity.ArtTeacher;
-import yevhent.demo.hibernate.query.crud.CrudQuery;
+import yevhent.demo.hibernate.entity.artschool.ArtReview;
+import yevhent.demo.hibernate.entity.artschool.ArtTeacher;
 
 import java.util.HashMap;
 import java.util.List;

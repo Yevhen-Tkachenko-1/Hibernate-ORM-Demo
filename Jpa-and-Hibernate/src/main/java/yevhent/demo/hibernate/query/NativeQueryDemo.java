@@ -5,8 +5,8 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Query;
 import jakarta.persistence.Tuple;
 import yevhent.demo.hibernate.configuration.ArtSchoolFactory;
-import yevhent.demo.hibernate.entity.ArtReview;
-import yevhent.demo.hibernate.entity.ArtTeacher;
+import yevhent.demo.hibernate.entity.artschool.ArtReview;
+import yevhent.demo.hibernate.entity.artschool.ArtTeacher;
 import yevhent.demo.hibernate.query.crud.CrudQuery;
 import yevhent.demo.hibernate.query.crud.CrudQueryUser;
 
