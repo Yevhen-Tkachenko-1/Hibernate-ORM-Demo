@@ -1,7 +1,8 @@
-package yevhent.demo.hibernate.entity;
+package yevhent.demo.hibernate.entity.artschool;
 
 import jakarta.persistence.*;
 import lombok.*;
+import yevhent.demo.hibernate.entity.general.Identifiable;
 
 @Entity
 @Table(schema = "art_school", name = "art_reviews")
