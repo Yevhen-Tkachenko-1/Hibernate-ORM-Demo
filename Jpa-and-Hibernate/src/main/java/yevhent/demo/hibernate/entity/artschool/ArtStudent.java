@@ -2,6 +2,7 @@ package yevhent.demo.hibernate.entity.artschool;
 
 import jakarta.persistence.*;
 import lombok.*;
+import yevhent.demo.hibernate.entity.Identifiable;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class ArtStudent {
+public class ArtStudent implements Identifiable {
 
     public ArtStudent(int id, String name) {
         this.id = id;

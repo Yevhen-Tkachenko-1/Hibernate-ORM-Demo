@@ -2,7 +2,7 @@ package yevhent.demo.hibernate.entity.artschool;
 
 import jakarta.persistence.*;
 import lombok.*;
-import yevhent.demo.hibernate.entity.general.Identifiable;
+import yevhent.demo.hibernate.entity.Identifiable;
 
 @Entity
 @Table(schema = "art_school", name = "art_reviews")

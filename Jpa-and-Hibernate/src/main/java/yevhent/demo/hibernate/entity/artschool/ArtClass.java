@@ -2,6 +2,7 @@ package yevhent.demo.hibernate.entity.artschool;
 
 import jakarta.persistence.*;
 import lombok.*;
+import yevhent.demo.hibernate.entity.Identifiable;
 
 @Entity
 @Table(schema = "art_school", name = "art_classes")
@@ -10,7 +11,7 @@ import lombok.*;
 @Setter
 @Getter
 @ToString(onlyExplicitlyIncluded = true)
-public class ArtClass {
+public class ArtClass implements Identifiable {
 
     public ArtClass(int id, String name, String weekDay) {
         this.id = id;
